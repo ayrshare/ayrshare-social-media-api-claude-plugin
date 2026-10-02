@@ -38,6 +38,19 @@ An LLM can generate an OAuth flow, but it does not cover Meta Tech Provider appr
 
 By default the plugin validates a post and requests confirmation before publishing. The agent prepares the draft; the user approves it.
 
+A `PreToolUse` hook (`hooks/hooks.json`) also makes Claude Code ask you before it runs any tool with a live side effect. If you decline, the tool does not run and no request reaches Ayrshare. The hook covers these tools:
+
+| Tool | Why it asks |
+|---|---|
+| `create_post`, `update_post`, `retry_post` | Publishes, schedules, or changes a post on real social accounts. |
+| `add_comment`, `reply_comment` | Posts a comment in public. |
+| `send_message` | Sends a direct message. |
+| `set_auto_response` | Turns the DM auto-responder on or off, or changes its reply. |
+| `create_profile` | Creates a client profile, which uses profile quota and cannot be deleted through MCP. |
+| `update_ad` | Pauses, resumes, deletes, or archives a boosted ad, which changes real ad spend. |
+
+The hook matches each tool under both names Claude Code can give it: `mcp__plugin_ayrshare_ayrshare__<tool>` when the server comes from this plugin, and `mcp__ayrshare__<tool>` when you registered the server yourself under the name `ayrshare`. It also lists `boost_post`, which the server does not offer yet, so that tool asks for confirmation as soon as it ships. Until then that entry never matches anything.
+
 ---
 
 ## Prerequisites
