@@ -2,7 +2,7 @@
   "name": "ayrshare",
   "displayName": "Ayrshare - Unified Social Media API for AI Agents",
   "description": "The unified social media API for AI agents. Publish, schedule, and analyze across 13+ networks from Claude Code, with post history for brand voice and content validation against each platform's rules before every post.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "author": {
     "name": "Ayrshare",

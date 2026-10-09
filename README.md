@@ -38,6 +38,23 @@ An LLM can generate an OAuth flow, but it does not cover Meta Tech Provider appr
 
 By default the plugin validates a post and requests confirmation before publishing. The agent prepares the draft; the user approves it.
 
+A `PreToolUse` hook (`hooks/hooks.json`) also makes Claude Code ask you before it runs any tool with a live side effect. If you decline, the tool does not run and no request reaches Ayrshare. The hook covers these tools:
+
+| Tool | Why it asks |
+|---|---|
+| `create_post`, `update_post`, `retry_post` | Publishes, schedules, or changes a post on real social accounts. |
+| `add_comment`, `reply_comment` | Posts a comment in public. |
+| `send_message` | Sends a direct message. |
+| `set_auto_response` | Turns the DM auto-responder on or off, or changes its reply. |
+| `create_profile` | Creates a client profile, which uses profile quota and cannot be deleted through MCP. |
+| `update_ad` | Pauses, resumes, deletes, or archives a boosted ad, which changes real ad spend. The same status is also set on the ad's ad set and campaign, so other ads there change too. |
+| `boost_post` | Boosts a published post as a paid ad, which spends real money from the ad account. |
+| `register_webhook`, `unregister_webhook` | Changes where Ayrshare sends your account's events, including message and comment content. |
+
+The hook matches each tool under both names Claude Code can give it: `mcp__plugin_ayrshare_ayrshare__<tool>` when the server comes from this plugin, and `mcp__ayrshare__<tool>` when you registered the server yourself under the name `ayrshare`.
+
+Versions before 0.2.2 never showed this prompt for plugin installs, because the hook only listed the `mcp__ayrshare__<tool>` names. To update, run `claude plugin marketplace update ayrshare`, then `claude plugin update ayrshare@ayrshare`, and restart Claude Code.
+
 ---
 
 ## Prerequisites
@@ -195,7 +212,7 @@ The former `/ayrshare:post`, `/ayrshare:analytics`, and `/ayrshare:profiles` com
 
 ## Skills
 
-Trigger-based skills activate automatically on intent (even when you don't name Ayrshare) and teach Claude how to drive the MCP tools correctly: the auth model (API key, plus optional profile selection by `Profile-Key` header or per-call `profileKey` argument), retry safety, and platform quirks. They cover all 27 of the server's tools. **Start with `getting-started`**; every group skill cross-links to it.
+Trigger-based skills activate automatically on intent (even when you don't name Ayrshare) and teach Claude how to drive the MCP tools correctly: the auth model (API key, plus optional profile selection by `Profile-Key` header or per-call `profileKey` argument), retry safety, and platform quirks. They cover 27 of the server's 33 tools. The six ads tools (`list_ad_accounts`, `list_ads`, `get_ad_history`, `search_ad_targeting`, `update_ad`, `boost_post`) do not have a skill yet. **Start with `getting-started`**; every group skill cross-links to it.
 
 | Skill | Tools | Use when |
 |---|---|---|
@@ -213,7 +230,7 @@ Trigger-based skills activate automatically on intent (even when you don't name 
 | `draft-in-brand-voice` | (workflow: `get_platform_history`/`get_post_history` → `get_post_analytics` → `generate_post` → `validate_post`) | Writing on-brand content by matching a profile's established voice from its post history; drafts only. |
 | `plan-and-schedule-campaign` | (workflow: `validate_post` → `create_post` per post, with `scheduleDate`) | Planning and scheduling a multi-post, multi-platform campaign or content calendar, validating each post first. |
 
-The last two are multi-step **workflow** skills: they orchestrate the tools above rather than adding new ones. Tool names follow the plugin's `mcp__ayrshare__<action>` convention (e.g. `mcp__ayrshare__create_post`).
+The last two are multi-step **workflow** skills: they orchestrate the tools above rather than adding new ones. Skills and agents refer to tools by their short `mcp__ayrshare__<action>` name (e.g. `mcp__ayrshare__create_post`). When the server comes from this plugin, Claude Code names the same tool `mcp__plugin_ayrshare_ayrshare__<action>`.
 
 ---
 
