@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This Ayrshare action has a live side effect: it publishes or sends content to real social accounts (including enabling the DM auto-responder), it changes the state of a boosted ad and so real ad spend (pause, resume, delete, or archive; the same status is also set on the ad set and campaign that contain it), it adds or removes a webhook (which changes where Ayrshare sends the events of this account, including message and comment content), or it creates a client profile (which consumes profile quota and cannot be deleted via MCP). Confirm the details with the user before approving.\"}}'"
+            "command": "printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This Ayrshare action has a live side effect: it publishes or sends content to real social accounts (including enabling the DM auto-responder), it boosts a post as a paid ad (which spends real money from the ad account), it changes the state of a boosted ad and so real ad spend (pause, resume, delete, or archive; the same status is also set on the ad set and campaign that contain it), it adds or removes a webhook (which changes where Ayrshare sends the events of this account, including message and comment content), or it creates a client profile (which consumes profile quota and cannot be deleted via MCP). Confirm the details with the user before approving.\"}}'"
           }
         ]
       }

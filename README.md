@@ -48,9 +48,10 @@ A `PreToolUse` hook (`hooks/hooks.json`) also makes Claude Code ask you before i
 | `set_auto_response` | Turns the DM auto-responder on or off, or changes its reply. |
 | `create_profile` | Creates a client profile, which uses profile quota and cannot be deleted through MCP. |
 | `update_ad` | Pauses, resumes, deletes, or archives a boosted ad, which changes real ad spend. The same status is also set on the ad's ad set and campaign, so other ads there change too. |
+| `boost_post` | Boosts a published post as a paid ad, which spends real money from the ad account. |
 | `register_webhook`, `unregister_webhook` | Changes where Ayrshare sends your account's events, including message and comment content. |
 
-The hook matches each tool under both names Claude Code can give it: `mcp__plugin_ayrshare_ayrshare__<tool>` when the server comes from this plugin, and `mcp__ayrshare__<tool>` when you registered the server yourself under the name `ayrshare`. It also lists `boost_post`, which the server does not offer yet, so that tool asks for confirmation as soon as it ships. Until then that entry never matches anything.
+The hook matches each tool under both names Claude Code can give it: `mcp__plugin_ayrshare_ayrshare__<tool>` when the server comes from this plugin, and `mcp__ayrshare__<tool>` when you registered the server yourself under the name `ayrshare`.
 
 Versions before 0.2.2 never showed this prompt for plugin installs, because the hook only listed the `mcp__ayrshare__<tool>` names. To update, run `claude plugin marketplace update ayrshare`, then `claude plugin update ayrshare@ayrshare`, and restart Claude Code.
 
@@ -211,7 +212,7 @@ The former `/ayrshare:post`, `/ayrshare:analytics`, and `/ayrshare:profiles` com
 
 ## Skills
 
-Trigger-based skills activate automatically on intent (even when you don't name Ayrshare) and teach Claude how to drive the MCP tools correctly: the auth model (API key, plus optional profile selection by `Profile-Key` header or per-call `profileKey` argument), retry safety, and platform quirks. They cover 27 of the server's 32 tools. The five ads tools (`list_ad_accounts`, `list_ads`, `get_ad_history`, `search_ad_targeting`, `update_ad`) do not have a skill yet. **Start with `getting-started`**; every group skill cross-links to it.
+Trigger-based skills activate automatically on intent (even when you don't name Ayrshare) and teach Claude how to drive the MCP tools correctly: the auth model (API key, plus optional profile selection by `Profile-Key` header or per-call `profileKey` argument), retry safety, and platform quirks. They cover 27 of the server's 33 tools. The six ads tools (`list_ad_accounts`, `list_ads`, `get_ad_history`, `search_ad_targeting`, `update_ad`, `boost_post`) do not have a skill yet. **Start with `getting-started`**; every group skill cross-links to it.
 
 | Skill | Tools | Use when |
 |---|---|---|
