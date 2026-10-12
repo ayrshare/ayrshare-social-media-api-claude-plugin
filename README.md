@@ -1,6 +1,6 @@
 # Ayrshare for Claude Code
 
-The unified social media API for AI agents. Publish, schedule, and analyze across 13+ networks directly from Claude Code, with post history for brand voice and validation against each platform's rules before every post. Powered by the [Ayrshare](https://www.ayrshare.com) API.
+The unified social media API for AI agents. Publish, schedule, and analyze across 14+ networks directly from Claude Code, with post history for brand voice and validation against each platform's rules before every post. Powered by the [Ayrshare](https://www.ayrshare.com) API.
 
 ## Install
 
@@ -15,7 +15,7 @@ After restarting, use the plugin by **asking in plain English** (e.g. "show my r
 
 ## Overview
 
-The plugin lets an agent run the full social workflow without leaving Claude Code. Before publishing, the agent validates each post against the target network's rules and asks you to confirm, so avoidable rejections are caught before anything goes live. A single request publishes to Facebook, Instagram, LinkedIn, X, TikTok, YouTube, Pinterest, Reddit, Telegram, Threads, Bluesky, and others. Post history is available for matching a brand's voice, and analytics can be read back to inform the next post. Platform integrations are maintained by Ayrshare, so upstream API changes are handled outside your code. The API currently handles 25M+ calls per day.
+The plugin lets an agent run the full social workflow without leaving Claude Code. Before publishing, the agent validates each post against the target network's rules and asks you to confirm, so avoidable rejections are caught before anything goes live. A single request publishes to Facebook, Instagram, LinkedIn, X, TikTok, YouTube, Pinterest, Reddit, Telegram, Threads, Bluesky, and others. Post history is available for matching a brand's voice, and analytics can be read back to inform the next post. Platform integrations are maintained by Ayrshare, so upstream API changes are handled outside your code. The API currently handles 30M+ calls per day.
 
 ## The loop
 
