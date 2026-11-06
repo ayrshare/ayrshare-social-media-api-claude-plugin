@@ -1,6 +1,6 @@
 # Profiles — Input Schemas & Examples
 
-These tools run against the Ayrshare MCP server at `https://api.ayrshare.com/mcp` and authenticate with the Business API key (the `Authorization: Bearer ${AYRSHARE_API_KEY}` header). `create_profile` and `list_profiles` are account-level and **ignore** `Profile-Key` (and take no `profileKey` argument). `generate_jwt_social_linking_url` is profile-scoped: it mints the linking URL for the target sub-profile, supplied as the **`profileKey` argument** or the **`Profile-Key` connection header** (required; the argument wins), and needs no signing credentials (the server derives the private key and domain). No `profileKey` is ever used as the auth key. Endpoints below are the underlying Ayrshare REST routes each tool maps to.
+These tools run against the Ayrshare MCP server at `https://api.ayrshare.com/mcp` and authenticate with the Business API key (the `Authorization: Bearer` header, from the plugin's `api_key` setting). `create_profile` and `list_profiles` are account-level and **ignore** `Profile-Key` (and take no `profileKey` argument). `generate_jwt_social_linking_url` is profile-scoped: it mints the linking URL for the target sub-profile, supplied as the **`profileKey` argument** or the **`Profile-Key` connection header** (required; the argument wins), and needs no signing credentials (the server derives the private key and domain). No `profileKey` is ever used as the auth key. Endpoints below are the underlying Ayrshare REST routes each tool maps to.
 
 ## `mcp__ayrshare__create_profile`
 

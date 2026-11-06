@@ -2,7 +2,7 @@
   "name": "ayrshare",
   "displayName": "Ayrshare - Unified Social Media API for AI Agents",
   "description": "The unified social media API for AI agents. Publish, schedule, and analyze across 13+ networks from Claude Code, with post history for brand voice and content validation against each platform's rules before every post.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "author": {
     "name": "Ayrshare",
@@ -10,6 +10,11 @@
   },
   "homepage": "https://www.ayrshare.com",
   "repository": "https://github.com/ayrshare/ayrshare-social-media-api-claude-plugin",
+  "icon": "./assets/icon.png",
+  "privacyPolicyUrl": "https://www.ayrshare.com/privacy/",
+  "termsOfServiceUrl": "https://www.ayrshare.com/terms/",
+  "documentationUrl": "https://www.ayrshare.com/docs/additional/mcp-claude-code-plugin",
+  "supportUrl": "https://www.ayrshare.com/contact/",
   "keywords": [
     "ayrshare",
     "social-media",
@@ -24,5 +29,35 @@
     "tiktok",
     "youtube",
     "social-media-api"
-  ]
+  ],
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Ayrshare API key",
+      "description": "Your Ayrshare API key, from app.ayrshare.com under Settings, then API Key. It is sent to the Ayrshare API on every call and is stored in your system's secure credential store.",
+      "required": true,
+      "sensitive": true
+    },
+    "profile_key": {
+      "type": "string",
+      "title": "Profile-Key (optional)",
+      "description": "A client profile's Profile-Key, to make every call act as that client by default. Leave it empty to act on your primary profile.",
+      "default": "",
+      "sensitive": true
+    },
+    "x_api_key": {
+      "type": "string",
+      "title": "X API Key (optional)",
+      "description": "Your X Developer App's API Key (Consumer Key), needed only to post to X. Set it together with the X API Secret, or leave both empty.",
+      "default": "",
+      "sensitive": true
+    },
+    "x_api_secret": {
+      "type": "string",
+      "title": "X API Secret (optional)",
+      "description": "Your X Developer App's API Secret (Consumer Secret), needed only to post to X. Set it together with the X API Key, or leave both empty.",
+      "default": "",
+      "sensitive": true
+    }
+  }
 }
