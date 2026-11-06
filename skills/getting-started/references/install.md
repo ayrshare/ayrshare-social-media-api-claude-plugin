@@ -32,7 +32,7 @@ After installing, open the plugin's settings dialog inside Claude Code:
 /plugin configure ayrshare@ayrshare
 ```
 
-If the plugin came from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure**. `claude plugin install` run from a shell does not show the dialog.
+If the plugin came from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**. `claude plugin install` run from a shell does not show the dialog.
 
 The dialog asks for the **Ayrshare API key** (required) and three optional settings (see *Optional configuration* below). Claude Code masks each value as it is typed and stores it in the system's secure credential store, not in a settings file. The plugin's bundled `.mcp.json` reads the values from there, so there is nothing else to set. `/ayrshare:setup` explains each field; it never asks for a key in the chat.
 

@@ -26,7 +26,7 @@ The four settings:
    /plugin configure ayrshare@ayrshare
    ```
 
-   If they installed the plugin from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure**.
+   If they installed the plugin from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**.
 
    Then walk them through the fields:
    - **Ayrshare API key**: required.
