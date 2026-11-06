@@ -7,7 +7,7 @@
 - `/ayrshare:setup` now walks you through the settings dialog and no longer asks you to paste a key into the chat.
 - The plugin now has an icon and links to the Ayrshare privacy policy, terms, documentation and support pages.
 
-**Check this if** you set up the plugin with version 0.2.2 or earlier: after updating, run `/plugin configure ayrshare@ayrshare` in Claude Code and enter your API key (and any optional values you used). Until you do, every Ayrshare tool returns an authentication error. You can then delete the old variables from your `settings.json` or shell profile.
+**Check this if** you set up the plugin with version 0.2.2 or earlier: after updating, run `/plugin configure ayrshare@ayrshare` in Claude Code and enter your API key (and any optional values you used). Until you do, the Ayrshare tools do not load. This version needs Claude Code 2.1.119 or later. You can then delete the old variables from your `settings.json` or shell profile.
 
 To update, run `claude plugin marketplace update ayrshare`, then `claude plugin update ayrshare@ayrshare`, and restart Claude Code.
 

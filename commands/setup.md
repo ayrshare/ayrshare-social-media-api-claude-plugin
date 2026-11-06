@@ -44,7 +44,7 @@ The four settings:
    - If the only `ayrshare`-related server is the plugin's own (`plugin:ayrshare:ayrshare`), there is nothing to clean up; do not prompt for removal.
 
 5. **Tell the user how to finish and how to use it.**
-   - After they save, Claude Code shows "Configuration saved." and reloads the plugin, which reconnects the server with the new values. If tools still return `401` or `403`, they should run `/reload-plugins` or restart Claude Code.
+   - After they save, Claude Code shows "Configuration saved." and reloads the plugin, which reconnects the server with the new values. If tools still return `401` or `403`, they should run `/reload-plugins` or restart Claude Code. If no Ayrshare tools appear at all, the API key setting is still empty, or their Claude Code is older than 2.1.119.
    - Then set expectations on invocation: the tools are used by **asking in plain English** (e.g. "show my recent Instagram posts", "post this to LinkedIn"), not by typing a slash command. `/ayrshare:setup` is the **only** slash command; the other tools fire on intent (the trigger-skills route them), so `/ayrshare:get_post_history` and similar will read as "unknown command."
 
 ## Notes

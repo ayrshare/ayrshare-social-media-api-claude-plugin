@@ -49,7 +49,7 @@ extra server, never the plugin's own and never the docs MCP.
 
 ### Upgrading from 0.2.2 or earlier
 
-Earlier versions read the key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). This version no longer reads them. Enter the same values once with `/plugin configure ayrshare@ayrshare`, then delete the old variables from the `env` block of your `settings.json` or your shell profile.
+This version needs Claude Code 2.1.119 or later. Earlier plugin versions read the key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). This version no longer reads them, and its tools do not load until you enter the key. Enter the same values once with `/plugin configure ayrshare@ayrshare`, then delete the old variables from the `env` block of your `settings.json` or your shell profile.
 
 ## Option 2: MCP only (no plugin)
 

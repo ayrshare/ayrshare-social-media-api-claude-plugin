@@ -9,7 +9,7 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 claude plugin install ayrshare@ayrshare
 ```
 
-Then, inside Claude Code, run `/plugin configure ayrshare@ayrshare` and enter your API key. Claude Code stores it in your system's secure credential store. `/ayrshare:setup` walks you through it. Scopes and other install paths are under [Installation](#installation) below.
+Requires Claude Code 2.1.119 or later. Then, inside Claude Code, run `/plugin configure ayrshare@ayrshare` and enter your API key. Claude Code stores it in your system's secure credential store. `/ayrshare:setup` walks you through it. Scopes and other install paths are under [Installation](#installation) below.
 
 Then use the plugin by **asking in plain English** (e.g. "show my recent Instagram posts", "post this to LinkedIn tomorrow at 9am"); the tools fire on intent, and the trigger-skills route them. `/ayrshare:setup` is the only slash command, so there is no `/ayrshare:post` or `/ayrshare:get_post_history` to type.
 
@@ -92,7 +92,7 @@ The dialog asks for your **Ayrshare API key** (required) and three optional sett
 
 #### Upgrading from 0.2.2 or earlier
 
-Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them. After updating, run `/plugin configure ayrshare@ayrshare` once and enter the same values. You can then delete the old variables from the `env` block of your `settings.json` (or your shell profile).
+Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` once and enter the same values. You can then delete the old variables from the `env` block of your `settings.json` (or your shell profile).
 
 ---
 
