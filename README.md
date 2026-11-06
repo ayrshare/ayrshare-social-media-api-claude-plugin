@@ -173,7 +173,7 @@ claude plugin install ayrshare@ayrshare
 printf '{"api_key":"%s"}' "$AYRSHARE_API_KEY" | claude plugin configure ayrshare@ayrshare --values-stdin
 ```
 
-Here `$AYRSHARE_API_KEY` is a variable your CI system fills from its secret store; the plugin itself does not read it. Saved values stay in that Claude Code configuration between runs, and sending an empty value does not clear one. On a shared or reused runner, set `CLAUDE_CONFIG_DIR` to a fresh folder for each job, so a Profile-Key saved by an earlier job is never reused.
+Here `$AYRSHARE_API_KEY` is a variable your CI system fills from its secret store; the plugin itself does not read it. Saved values stay in that Claude Code configuration between runs, and sending an empty value does not clear one. On a shared or reused runner, export `CLAUDE_CONFIG_DIR` as a fresh folder before the commands above, so a Profile-Key saved by an earlier job is never reused; the job then needs its own Claude Code sign-in. When the job ends, run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder.
 
 The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you leave out keep their saved values. Older Claude Code versions only take each setting as `--config KEY=VALUE` on `claude plugin install`. A value on the command line can show up in shell history and in the process list, so use `--config` only on a machine nobody else uses.
 
