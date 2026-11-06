@@ -2,5 +2,5 @@
 .env.local
 .env.*
 *.local
-# Claude Code local settings (may hold AYRSHARE_API_KEY); *.local above does not match *.local.json
+# Claude Code local settings (plugin versions 0.2.2 and earlier kept the API key there); *.local above does not match *.local.json
 .claude/settings.local.json

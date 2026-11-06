@@ -1,22 +1,22 @@
 ---
 name: getting-started
 description: |
-  Foundation skill for the Ayrshare MCP server — auth model, installation, client onboarding, and retry safety. Use this whenever someone is installing, configuring, or wiring up the Ayrshare MCP plugin/server in Claude Code; whenever an Ayrshare MCP tool call returns 401/403 or "unauthorized"; whenever there's confusion about WHICH credential to use ("which key do I use", "how do I act as a specific client", Business key vs Profile-Key); when onboarding a new client/customer/profile; or when a user has no Ayrshare account, no API key, or an unset AYRSHARE_API_KEY. Trigger even if the user doesn't say "Ayrshare" by name — if they're calling tools named `mcp__ayrshare__*`, setting up an MCP server for social posting, or asking how to connect a client's social accounts through an AI assistant, this is the skill. Every other Ayrshare MCP skill (posts, comments, analytics, history, messages, media, profiles, generate, webhooks, errors) cross-links here for the shared auth and retry rules.
+  Foundation skill for the Ayrshare MCP server — auth model, installation, client onboarding, and retry safety. Use this whenever someone is installing, configuring, or wiring up the Ayrshare MCP plugin/server in Claude Code; whenever an Ayrshare MCP tool call returns 401/403 or "unauthorized"; whenever there's confusion about WHICH credential to use ("which key do I use", "how do I act as a specific client", Business key vs Profile-Key); when onboarding a new client/customer/profile; or when a user has no Ayrshare account, no API key, or an API key that is not set up yet. Trigger even if the user doesn't say "Ayrshare" by name — if they're calling tools named `mcp__ayrshare__*`, setting up an MCP server for social posting, or asking how to connect a client's social accounts through an AI assistant, this is the skill. Every other Ayrshare MCP skill (posts, comments, analytics, history, messages, media, profiles, generate, webhooks, errors) cross-links here for the shared auth and retry rules.
 ---
 
 # Ayrshare MCP — Getting Started
 
 The single home for the cross-cutting model behind the Ayrshare MCP server: the **auth model** (API key connection header, plus optional profile selection by either a `Profile-Key` connection header or a per-call `profileKey` tool argument), the **client onboarding sequence**, and the **retry-safety rules**. Every other Ayrshare MCP skill points here instead of repeating it. If you only read one Ayrshare MCP skill, read this one. Most failures are auth-layer mistakes, not tool bugs.
 
-- Transport: **HTTP MCP server** at `https://api.ayrshare.com/mcp`, authenticated by the header `Authorization: Bearer ${AYRSHARE_API_KEY}`.
+- Transport: **HTTP MCP server** at `https://api.ayrshare.com/mcp`, authenticated by the header `Authorization: Bearer <API key>`, filled from the plugin's `api_key` setting.
 - Tools are named `mcp__ayrshare__<action>` (e.g. `mcp__ayrshare__create_post`).
-- Full install instructions (Claude Code plugin, MCP-only, env-var/CI) live in `references/install.md`. The summary below is enough to get running.
+- Full install instructions (Claude Code plugin, MCP-only, CI/headless) live in `references/install.md`. The summary below is enough to get running.
 
 ## Authentication — the #1 failure mode
 
 Auth has two parts. The **API key** is always a per-connection header configured in the MCP client (the plugin's `.mcp.json`), never a tool argument. The **target profile** is optional and can be set two equivalent ways, either a `Profile-Key` connection header (applies to every call on the connection) or a per-call `profileKey` tool argument (selects the profile for that one call):
 
-**`Authorization: Bearer <API key>` (required).** Your account-level Ayrshare Business API key. The MCP server sends it on every call as the HTTP Bearer token. It is configured once via `/ayrshare:setup` (or the `AYRSHARE_API_KEY` env var), never passed as a per-call argument. The multi-profile features (Profiles) require a **Business plan**.
+**`Authorization: Bearer <API key>` (required).** Your account-level Ayrshare Business API key. The MCP server sends it on every call as the HTTP Bearer token. It is entered once in the plugin's settings (`/plugin configure ayrshare@ayrshare`; `/ayrshare:setup` explains it), never passed as a per-call argument. The multi-profile features (Profiles) require a **Business plan**.
 
 **Target profile (optional): `Profile-Key` header *or* `profileKey` argument.** Selects which client/customer profile a call acts on; a `profileKey` is returned by `mcp__ayrshare__create_profile`. Set it either as the `Profile-Key` connection header (the default for every call on that connection) or as an optional `profileKey` argument on the tool call (just that call). **When both are present, the `profileKey` argument wins**; with neither, calls act on the account's **primary** profile. The per-call argument lets an agent act as a client it learns at runtime (from chat, a database, or a CRM) without editing `.mcp.json` or restarting. It is accepted by the profile-scoped tools only; the account-level and no-social-account tools ignore it (see *Which tools accept `profileKey`* below). (`generate_jwt_social_linking_url` uses the same value to pick the sub-profile it mints a linking URL for, and **requires** it via either input.)
 
@@ -33,14 +33,14 @@ Most tools are **profile-scoped** and accept the optional `profileKey` argument 
 
 ### Setting the profile: connection header vs per-call argument
 
-**As a connection header (the default for every call).** With the **plugin**, the bundled `.mcp.json` already carries the header with an empty default:
+**As a connection header (the default for every call).** With the **plugin**, the bundled `.mcp.json` already carries the header, filled from the plugin's optional `profile_key` setting (empty by default):
 ```jsonc
 "headers": {
-  "Authorization": "Bearer ${AYRSHARE_API_KEY}",
-  "Profile-Key": "${AYRSHARE_PROFILE_KEY:-}"   // empty when unset → primary profile
+  "Authorization": "Bearer ${user_config.api_key}",
+  "Profile-Key": "${user_config.profile_key}"   // empty by default → primary profile
 }
 ```
-So you just set `AYRSHARE_PROFILE_KEY` (in your `settings.json` `env` block, same place as `AYRSHARE_API_KEY`, on any OS) and restart; every call on that connection then defaults to that profile. Leave it unset and the header goes out empty, which the server treats as "act on the primary profile." (For a non-plugin `claude mcp add` setup, add the `Profile-Key` header yourself alongside `Authorization`.)
+So the user just fills in **Profile-Key** with `/plugin configure ayrshare@ayrshare`; every call on that connection then defaults to that profile. Leave it empty and the header goes out empty, which the server treats as "act on the primary profile." (For a non-plugin `claude mcp add` setup, add the `Profile-Key` header yourself alongside `Authorization`.)
 
 **As a per-call argument (no restart).** Leave the header unset (or keep one as the default) and pass `profileKey` directly on a profile-scoped tool call to act as a specific client for that single call. The argument takes precedence over the header when both are set, so an agent can act as a client it discovers at runtime without touching `.mcp.json` or restarting:
 ```jsonc
@@ -67,15 +67,15 @@ Each domain has its own skill with full parameters and gotchas:
 
 (There is no `get_user`, `delete_post`, `delete_comment`, `delete_profile`, or media upload/library/resize tool — if you reach for one of those, it does not exist.)
 
-## AYRSHARE_API_KEY requirement
+## API key requirement
 
-`AYRSHARE_API_KEY` is the **account-level Business plan API key**, obtained from the Ayrshare dashboard ([app.ayrshare.com](https://app.ayrshare.com) → Settings → API Key). The MCP server sends it as the HTTP Bearer token, loaded **at session start** — it is not passed per-call. A **Business plan is required** for the Profiles / multi-profile features (create profile, act as a client). If the key is missing or wrong, the server cannot authenticate any tool — see *Missing credentials* below.
+The API key (the plugin's `api_key` setting) is the **account-level Business plan API key**, obtained from the Ayrshare dashboard ([app.ayrshare.com](https://app.ayrshare.com) → Settings → API Key). The MCP server sends it as the HTTP Bearer token on every call; it is not a per-call argument. A **Business plan is required** for the Profiles / multi-profile features (create profile, act as a client). If the key is missing, Claude Code does not load the server, so no Ayrshare tools appear; if it is wrong, every tool returns 401/403. See *Missing credentials* below.
 
 ## Installation (summary)
 
 Full, copy-paste instructions are in `references/install.md`. The essentials:
 
-**Claude Code plugin (recommended)** — register the marketplace once, install (this brings commands, agents, and skills), then configure the key via setup:
+**Claude Code plugin (recommended)** — register the marketplace once, install (this brings commands, agents, and skills), then enter the key in the plugin's settings:
 ```bash
 claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin   # one time
 claude plugin install ayrshare@ayrshare                  # default scope: user (all projects)
@@ -83,11 +83,11 @@ claude plugin install ayrshare@ayrshare                  # default scope: user (
 claude plugin install ayrshare@ayrshare --scope local    # this project, not committed
 claude plugin install ayrshare@ayrshare --scope project  # this project, committed with team
 ```
-Then inside Claude Code, configure your key and **restart**:
+Then inside Claude Code, open the plugin's settings dialog and enter the key:
 ```text
-/ayrshare:setup
+/plugin configure ayrshare@ayrshare
 ```
-After `/ayrshare:setup` writes the key, you MUST **restart Claude Code** — the MCP connection is initialized at session start, so the key isn't active until the next session.
+The value is masked and stored in the system's secure credential store. Never ask the user to paste the key into the chat. `claude plugin install` from a shell does not show the dialog, so it has to be opened from a session. `/ayrshare:setup` walks the user through the fields.
 
 **MCP only (no plugin)** — raw tools, no commands/agents/skills:
 ```bash
@@ -96,15 +96,11 @@ claude mcp add ayrshare --transport http \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
-**Env var / CI:**
-```bash
-export AYRSHARE_API_KEY=your_key_here
-claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
-claude plugin install ayrshare@ayrshare
-```
-The plugin's `.mcp.json` substitutes `${AYRSHARE_API_KEY}` at startup — no `/ayrshare:setup` needed.
+**CI / headless:** install the plugin, then pipe the values as JSON into `claude plugin configure ayrshare@ayrshare --values-stdin` (Claude Code 2.1.285+), filled from the CI system's secret store so the key never sits on a command line (details in `references/install.md`).
 
-> **Verification gotcha:** do NOT verify the key by calling a tool in the *same* session where you set it. The key loads at session start, so a freshly-set key always returns 401/403 until you **restart Claude Code**. Restart first, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
+**Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare`, Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
+
+> **Verification gotcha:** saving the settings reloads the plugin and reconnects the server. If a tool still returns 401/403 right after, run `/reload-plugins` or restart Claude Code, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
 
 ## Canonical client onboarding sequence
 
@@ -112,7 +108,7 @@ Onboarding a new client means creating a profile under your Business account, ge
 
 1. **`mcp__ayrshare__create_profile`** (account-level, API key) — pass a `title`; returns the `profileKey`. Capture it (store it securely — it is sensitive).
 2. **Mint the linking URL with `mcp__ayrshare__generate_jwt_social_linking_url`,** passing the `profileKey` from step 1 as the `profileKey` argument. No header change and no restart are needed; the argument selects the target profile for that call (the `Profile-Key` header still works as an alternative). It needs **no private key or domain** (the server derives those from your authenticated account) and returns a hosted linking `url` (valid 5 minutes by default, or `expiresIn` on the Max Pack). Hand the `url` to the client; they open it in a browser to OAuth their accounts. (The Ayrshare dashboard's linking page and the REST `/profiles/generateJWT` endpoint are equivalent alternatives.) Requires a provisioned social-linking domain (Business/Enterprise). Full schema in `../profiles/SKILL.md`.
-3. **Act as the new profile** for ongoing posting/analytics/comments/etc.: pass its `profileKey` as the tool argument on each call, or set the connection's `Profile-Key` header (and restart) to make that profile the default for the whole connection. `create_profile`/`list_profiles` ignore both and stay account-level.
+3. **Act as the new profile** for ongoing posting/analytics/comments/etc.: pass its `profileKey` as the tool argument on each call, or fill in the plugin's Profile-Key setting with `/plugin configure ayrshare@ayrshare` to make that profile the default for the whole connection. `create_profile`/`list_profiles` ignore both and stay account-level.
 4. **Verify:** `mcp__ayrshare__list_profiles` shows the profile and its linked platforms; `mcp__ayrshare__get_post_history` (with the `profileKey` argument or the `Profile-Key` header set) confirms you are acting on the right profile.
 
 Don't over-railroad this. A client may already have a `profileKey`, in which case skip to step 2.
@@ -130,7 +126,7 @@ The server fails fast and surfaces errors. Your job is to **not paper over them*
 
 ## Missing credentials / free-trial guidance
 
-When the user has **no Ayrshare account or API key**, when **`AYRSHARE_API_KEY` is unset/wrong**, or when the API returns **401/403**, surface this signup link for a **28-day free trial of the Ayrshare Launch plan**:
+When the user has **no Ayrshare account or API key**, when **the API key is not set or wrong** (an unset key means no `mcp__ayrshare__*` tools load at all), or when the API returns **401/403**, surface this signup link for a **28-day free trial of the Ayrshare Launch plan**:
 
 ```text
 https://billing.ayrshare.com/b/9B6bJ15Oidr9fz615u1Nu0h?utm_source=claude
@@ -142,8 +138,8 @@ The `?utm_source=claude` query parameter MUST be preserved exactly — it is sig
 
 - **Losing track of which profile a call targets.** The `profileKey` tool argument wins over the `Profile-Key` connection header; with neither set, calls act on the primary profile. To act as a client for one call, pass `profileKey` as the argument; to make a whole connection default to that client, set the header. The account-level tools (`create_profile`, `list_profiles`) and the no-social-account tools (`validate_media`, `explain_error`, `generate_post`, `recommend_hashtags`) accept neither. On `get_platform_history` / `get_social_network_analytics`, a `userId`/`userName` lookup must use the API key only (a `profileKey` there returns Error 400).
 - **Reaching for a tool that doesn't exist.** There is no `get_user`, `delete_post`, `delete_comment`, `delete_profile`, or media upload/list/resize tool. Deleting profiles is done in the dashboard / REST API; linking a client's accounts is done by the client opening a `generate_jwt_social_linking_url` URL in their browser (the MCP mints the link but does not run the OAuth).
-- **Verifying in the same session you set the key.** The HTTP Bearer token loads at session start. A key set via `/ayrshare:setup` won't activate until you **restart Claude Code** — verifying before restart returns 401/403. After restart, verify with `mcp__ayrshare__get_post_history` (works on any plan).
+- **Verifying before the server reconnects.** The Bearer token is sent from the plugin's saved settings. If a call still returns 401/403 just after saving them, run `/reload-plugins` or restart Claude Code, then verify with `mcp__ayrshare__get_post_history` (works on any plan).
 - **Auto-retrying a failed write.** Never retry a write on a 4xx; call `explain_error` and surface it. To re-attempt a failed post use `retry_post` (once, only if retryable), never a second `create_post`. 429 gets exactly one retry.
 - **Assuming a non-Business plan works for Profiles.** Profiles and multi-profile onboarding require a Business plan. A Launch/free-trial key fails these even though the key is valid for single-account posting.
 - **Dropping `utm_source=claude`.** The trial link's query param is attribution; keep it byte-for-byte.
-- **Assuming you must restart to switch clients.** You don't. Pass the target client's `profileKey` as a tool argument and that single call acts as them, with no header change and no restart. Change the `Profile-Key` header (and restart) only when you want every call on the connection to default to one client.
+- **Assuming you must restart to switch clients.** You don't. Pass the target client's `profileKey` as a tool argument and that single call acts as them, with no header change and no restart. Change the Profile-Key setting (with `/plugin configure ayrshare@ayrshare`) only when you want every call on the connection to default to one client.

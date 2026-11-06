@@ -43,7 +43,7 @@ For example: a profile named "Acme News" might have X, Instagram, and Facebook c
 
 1. `mcp__ayrshare__create_profile` — pass a `title`. Capture the returned `profileKey` immediately (it is sensitive).
 2. **Mint the linking URL**, call `mcp__ayrshare__generate_jwt_social_linking_url`, passing the `profileKey` from step 1 as the `profileKey` argument (no header change, no restart; the `Profile-Key` header is an equivalent alternative). It needs **no private key or domain**; the server derives those. It returns a hosted linking `url`; hand it to the client, who opens it in a browser to OAuth their accounts. Requires a provisioned social-linking domain (Business/Enterprise). (The dashboard / REST `generateJWT` are equivalent alternatives.)
-3. **Act as the new profile** for downstream post / analytics / history work, pass its `profileKey` as the tool argument on each call, or set the connection's `Profile-Key` header (and restart) to make it the default. `create_profile` and `list_profiles` stay account-level (API key only) and ignore both.
+3. **Act as the new profile** for downstream post / analytics / history work, pass its `profileKey` as the tool argument on each call, or fill in the plugin's Profile-Key setting with `/plugin configure ayrshare@ayrshare` to make it the default. `create_profile` and `list_profiles` stay account-level (API key only) and ignore both.
 4. **Verify** — `mcp__ayrshare__list_profiles` shows the profile and its linked platforms.
 
 ## Behavioral rules
