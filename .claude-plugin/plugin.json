@@ -48,14 +48,14 @@
     "x_api_key": {
       "type": "string",
       "title": "X API Key (optional)",
-      "description": "Your X Developer App's API Key (Consumer Key), needed only to post to X. Set it together with the X API Secret, or leave both empty.",
+      "description": "Your X Developer App's API Key (Consumer Key), needed for any X/Twitter call (posting, analytics, messages). Set it together with the X API Secret, or leave both empty.",
       "default": "",
       "sensitive": true
     },
     "x_api_secret": {
       "type": "string",
       "title": "X API Secret (optional)",
-      "description": "Your X Developer App's API Secret (Consumer Secret), needed only to post to X. Set it together with the X API Key, or leave both empty.",
+      "description": "Your X Developer App's API Secret (Consumer Secret), needed for any X/Twitter call (posting, analytics, messages). Set it together with the X API Key, or leave both empty.",
       "default": "",
       "sensitive": true
     }

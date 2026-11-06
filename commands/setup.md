@@ -12,7 +12,7 @@ The four settings:
 |---|---|---|
 | **Ayrshare API key** (`api_key`) | Yes | Sent as the `Authorization: Bearer` header on every call. From https://app.ayrshare.com, Settings, then API Key. |
 | **Profile-Key** (`profile_key`) | No | Makes every call act as one client profile by default. Leave it empty to act on the account's primary profile. A `profileKey` tool argument on a single call still overrides it. |
-| **X API Key** (`x_api_key`) and **X API Secret** (`x_api_secret`) | Only to post to X/Twitter | Your X Developer App's OAuth 1.0a pair, sent as the `X-Twitter-OAuth1-Api-Key` and `X-Twitter-OAuth1-Api-Secret` headers. Set both or neither: with neither, any X call fails with `419`; with only one, it fails with `400`. Other networks are unaffected. |
+| **X API Key** (`x_api_key`) and **X API Secret** (`x_api_secret`) | Only for X/Twitter (posting, analytics, messages) | Your X Developer App's OAuth 1.0a pair, sent as the `X-Twitter-OAuth1-Api-Key` and `X-Twitter-OAuth1-Api-Secret` headers. Set both or neither: with neither, any X call fails with `419`; with only one, it fails with `400`. Other networks are unaffected. |
 
 **Surface note:** this configures **Claude Code** (CLI, IDE, and the desktop **Code** tab). Cowork does not prompt for plugin settings, so the plugin's tools do not load there yet; see the "Cowork and the desktop app" section in the README.
 
@@ -31,7 +31,7 @@ The four settings:
    Then walk them through the fields:
    - **Ayrshare API key**: required.
    - **Profile-Key**: ask whether they want every call to default to one client profile. This is a neutral choice that depends on how they work; do not present either answer as recommended. If not, they leave it empty.
-   - **X API Key** and **X API Secret**: ask "Do you post to X/Twitter?" If yes, they enter both. If no, they leave both empty. Do not present skipping as recommended: anyone who makes any X call needs the pair.
+   - **X API Key** and **X API Secret**: ask "Do you use X/Twitter through Ayrshare (posting, analytics or messages)?" If yes, they enter both. If no, they leave both empty. Do not present skipping as recommended: anyone who makes any X call needs the pair.
 
    To change a value later, they open the same dialog again. Leaving a field as it is keeps its saved value.
 
@@ -51,4 +51,4 @@ The four settings:
 
 - One mechanism: the four settings above are exactly what the plugin's bundled `.mcp.json` reads (`${user_config.api_key}`, `${user_config.profile_key}`, `${user_config.x_api_key}`, `${user_config.x_api_secret}`). No duplicate servers and no settings files.
 - The three optional settings default to empty. An empty header is treated by the server as not provided, so leaving one empty has no effect and causes no error.
-- To install from a shell without a dialog (for example on a CI machine), use `claude plugin install ayrshare@ayrshare --config api_key=...`, or on Claude Code 2.1.285 or later pipe a JSON object of the values into `claude plugin configure ayrshare@ayrshare --values-stdin`. A value passed on the command line can end up in shell history, so prefer reading it from the CI system's secret store.
+- To set the values from a shell without a dialog (for example on a CI machine), on Claude Code 2.1.285 or later install the plugin, then pipe a JSON object of the values into `claude plugin configure ayrshare@ayrshare --values-stdin`, reading the key from the CI system's secret store. Older versions only take `--config api_key=...` on `claude plugin install`; a value on the command line can show up in shell history and in the process list, so use that only on a machine nobody else uses.

@@ -165,14 +165,17 @@ Add `--scope local` to limit it to the current project. The key is stored perman
 
 ### Installing without a dialog (CI / headless)
 
-`claude plugin install` takes each setting as `--config KEY=VALUE`:
+On Claude Code 2.1.285 or later, install the plugin, then pipe the values in as JSON on standard input, so the key never appears on a command line:
 
 ```bash
 claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
-claude plugin install ayrshare@ayrshare --config api_key=YOUR_API_KEY
+claude plugin install ayrshare@ayrshare
+printf '{"api_key":"%s"}' "$AYRSHARE_API_KEY" | claude plugin configure ayrshare@ayrshare --values-stdin
 ```
 
-The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`. A value typed on the command line can end up in shell history, so on a shared or CI machine fill it in from your CI system's secret store. On Claude Code 2.1.285 or later you can instead pipe a JSON object of the values into `claude plugin configure ayrshare@ayrshare --values-stdin`.
+Here `$AYRSHARE_API_KEY` is a variable your CI system fills from its secret store; the plugin itself does not read it.
+
+The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you leave out keep their saved values. Older Claude Code versions only take each setting as `--config KEY=VALUE` on `claude plugin install`. A value on the command line can show up in shell history and in the process list, so use `--config` only on a machine nobody else uses.
 
 ---
 
@@ -184,7 +187,7 @@ The plugin has one API key setting (`api_key`, required) and three optional ones
 |---|---|---|---|
 | **Claude Code** (CLI / IDE / desktop "Code" tab) | The plugin's settings dialog: `/plugin configure ayrshare@ayrshare` | `profile_key` setting, or per-call `profileKey` argument | `x_api_key` + `x_api_secret` settings |
 | **Cowork / claude.ai desktop app** | **Not supported yet.** The skills install, but Cowork does not prompt for plugin settings, so the plugin's MCP server does not load there. Needs OAuth (see [Roadmap](#roadmap)). | not available yet | not available yet |
-| **CI / headless** | `--config` on `claude plugin install`, or `claude plugin configure --values-stdin` | `profile_key` | `x_api_key` + `x_api_secret` |
+| **CI / headless** | `claude plugin configure --values-stdin` (2.1.285+), or `--config` on `claude plugin install` | `profile_key` | `x_api_key` + `x_api_secret` |
 
 ## Cowork and the desktop app (not supported yet)
 
@@ -244,7 +247,7 @@ Fill in the **Profile-Key** setting to default the whole connection to one clien
 
 ### Bring-your-own X/Twitter app (BYOK)
 
-Posting to X/Twitter requires your own X Developer App (the [X BYO-key mandate](https://www.ayrshare.com/docs/apis/overview#x/twitter-byo-credentials), effective March 31, 2026). After linking X with your app's credentials, fill in **both** settings with `/plugin configure ayrshare@ayrshare` (values are never logged):
+Any X/Twitter call (posting, analytics, messages) requires your own X Developer App (the [X BYO-key mandate](https://www.ayrshare.com/docs/apis/overview#x/twitter-byo-credentials), effective March 31, 2026). After linking X with your app's credentials, fill in **both** settings with `/plugin configure ayrshare@ayrshare` (values are never logged):
 
 - **X API Key** (`x_api_key`): your X API Key (Consumer Key); sent as the `X-Twitter-OAuth1-Api-Key` header.
 - **X API Secret** (`x_api_secret`): your X API Secret (Consumer Secret); sent as the `X-Twitter-OAuth1-Api-Secret` header.

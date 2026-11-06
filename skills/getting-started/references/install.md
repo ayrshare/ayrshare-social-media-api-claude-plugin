@@ -65,14 +65,17 @@ Add `--scope local` to limit it to the current project. The key is stored perman
 
 ## Option 3: Install without a dialog (CI / headless)
 
-`claude plugin install` takes each setting as `--config KEY=VALUE`:
+On Claude Code 2.1.285 or later, install the plugin, then pipe the values in as JSON on standard input, so the key never appears on a command line:
 
 ```bash
 claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
-claude plugin install ayrshare@ayrshare --config api_key=YOUR_API_KEY
+claude plugin install ayrshare@ayrshare
+printf '{"api_key":"%s"}' "$AYRSHARE_API_KEY" | claude plugin configure ayrshare@ayrshare --values-stdin
 ```
 
-The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`. A value typed on the command line can end up in shell history, so on a shared or CI machine fill it in from the CI system's secret store. On Claude Code 2.1.285 or later you can instead pipe a JSON object of the values into `claude plugin configure ayrshare@ayrshare --values-stdin`.
+Here `$AYRSHARE_API_KEY` is a variable your CI system fills from its secret store; the plugin itself does not read it.
+
+The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you leave out keep their saved values. Older Claude Code versions only take each setting as `--config KEY=VALUE` on `claude plugin install`. A value on the command line can show up in shell history and in the process list, so use `--config` only on a machine nobody else uses.
 
 ## Optional configuration
 
@@ -85,7 +88,7 @@ which the server treats as "not provided" (no effect, no error), so there is no 
 | Setting | Description |
 |---|---|
 | **Profile-Key** (`profile_key`) | Sets the `Profile-Key` header so the whole connection defaults to a specific client profile. For one-off or runtime profile selection, pass `profileKey` as a tool argument on a profile-scoped call instead; it takes precedence over the header and needs no restart. See the auth model in SKILL.md. |
-| **X API Key** (`x_api_key`) + **X API Secret** (`x_api_secret`) | Your X Developer App's OAuth 1.0a key pair (API Key / Consumer Key and API Secret / Consumer Secret), required to post to X/Twitter under the BYO-key mandate (effective March 31, 2026). These map to the `X-Twitter-OAuth1-Api-Key` / `X-Twitter-OAuth1-Api-Secret` headers, the only X BYO headers Ayrshare uses (one key pair per account, on every X-targeting request; no OAuth 2.0 client credentials or per-user access tokens). Values are never logged. Set **both** or neither: neither set → error `419` (`x_credentials_required`); only one set → error `400`. |
+| **X API Key** (`x_api_key`) + **X API Secret** (`x_api_secret`) | Your X Developer App's OAuth 1.0a key pair (API Key / Consumer Key and API Secret / Consumer Secret), required for any X/Twitter call (posting, analytics, messages) under the BYO-key mandate (effective March 31, 2026). These map to the `X-Twitter-OAuth1-Api-Key` / `X-Twitter-OAuth1-Api-Secret` headers, the only X BYO headers Ayrshare uses (one key pair per account, on every X-targeting request; no OAuth 2.0 client credentials or per-user access tokens). Values are never logged. Set **both** or neither: neither set → error `419` (`x_credentials_required`); only one set → error `400`. |
 
 ## Notes
 

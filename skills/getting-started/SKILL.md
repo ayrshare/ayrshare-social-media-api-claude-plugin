@@ -96,7 +96,7 @@ claude mcp add ayrshare --transport http \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
-**CI / headless:** pass each setting to the install, e.g. `claude plugin install ayrshare@ayrshare --config api_key=...`, filled from the CI system's secret store (details in `references/install.md`).
+**CI / headless:** install the plugin, then pipe the values as JSON into `claude plugin configure ayrshare@ayrshare --values-stdin` (Claude Code 2.1.285+), filled from the CI system's secret store so the key never sits on a command line (details in `references/install.md`).
 
 **Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not, so a user who upgrades gets 401/403 until they enter the key with `/plugin configure ayrshare@ayrshare`.
 
