@@ -26,7 +26,7 @@ The four settings:
    /plugin configure ayrshare@ayrshare
    ```
 
-   If they added Ayrshare from Claude's plugin directory on claude.ai, Claude Code knows it as `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced`. `claude plugin list` shows the id they have. With any other id, or if the command doesn't open the dialog, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**.
+   If they added Ayrshare from Claude's plugin directory on claude.ai, Claude Code knows it as `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced`. `claude plugin list` shows the id they have. Plugins from claude.ai appear in Claude Code 2.1.273 or later; on an older version they update Claude Code or install from the repository's marketplace instead. With any other id, or if the command doesn't open the dialog, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**. In the VS Code extension, they type `/plugins` and click the gear icon on the **ayrshare** row.
 
    Then walk them through the fields:
    - **Ayrshare API key**: required.
@@ -35,7 +35,7 @@ The four settings:
 
    To change a value later, they open the same dialog again. Leaving a field as it is keeps its saved value.
 
-   To stop defaulting to a client profile, they first try emptying the **Profile-Key** field in the dialog and saving. If calls still act as that client, the sure way is to remove the plugin, which deletes all its saved values, then add it again and re-enter the API key: `claude plugin uninstall ayrshare@ayrshare` and `claude plugin install ayrshare@ayrshare` (for a plugin added from Claude's plugin directory, remove and re-add it there instead). An empty value sent with `--values-stdin` does not clear a saved one.
+   To stop defaulting to a client profile, they remove the plugin and add it again. Clearing the field doesn't work: a blank field keeps the saved value, and so does an empty value sent with `--values-stdin`. Claude Code deletes saved values only when it removes the plugin's last installed scope, so they uninstall it at every scope `claude plugin list` shows (for example `claude plugin uninstall ayrshare@ayrshare --scope project`; the default is `--scope user`), install it again at the same scopes, and re-enter the API key, plus the X API Key and Secret if they use X. For a plugin added from Claude's plugin directory, they remove it on claude.ai, add it again, and re-enter their settings.
 
 3. **If they set up the plugin with version 0.2.2 or earlier**, those versions read the key from environment variables, and this version no longer does. Tell them their old `AYRSHARE_API_KEY`, `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET` entries now do nothing, and that they can delete them from wherever they put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or a shell profile. Let them do this themselves; do not open or read those files.
 

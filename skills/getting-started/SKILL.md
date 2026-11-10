@@ -87,7 +87,7 @@ Then inside Claude Code, open the plugin's settings dialog and enter the key:
 ```text
 /plugin configure ayrshare@ayrshare
 ```
-If the user added Ayrshare from Claude's plugin directory on claude.ai, the plugin's id is `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced` (`claude plugin list` shows the id; the dialog is also under `/plugin` → **Installed** → **ayrshare** → **Configure options**). The value is masked and stored in the system's secure credential store. Never ask the user to paste the key into the chat. `claude plugin install` from a shell does not show the dialog, so it has to be opened from a session. `/ayrshare:setup` walks the user through the fields.
+If the user added Ayrshare from Claude's plugin directory on claude.ai, the plugin's id is `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced` (needs Claude Code 2.1.273 or later; `claude plugin list` shows the id; the dialog is also under `/plugin` → **Installed** → **ayrshare** → **Configure options**, and in VS Code under `/plugins` → the gear icon on the **ayrshare** row). The value is masked and stored in the system's secure credential store. Never ask the user to paste the key into the chat. `claude plugin install` from a shell does not show the dialog, so it has to be opened from a session. `/ayrshare:setup` walks the user through the fields.
 
 **MCP only (no plugin)** — raw tools, no commands/agents/skills:
 ```bash

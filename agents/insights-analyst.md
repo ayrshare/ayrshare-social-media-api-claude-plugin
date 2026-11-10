@@ -55,7 +55,7 @@ If the user asks for any of those, explain that this agent is read-only and poin
 4. **`userId`/`userName` lookups use the API key only.** On `get_platform_history` / `get_social_network_analytics`, a `userId`/`userName` lookup must use the account API key only, supplying a `profileKey` argument or `Profile-Key` header there returns Error 400. See getting-started.
 5. **Distinguish the two analytics IDs.** Use `get_post_analytics` for an Ayrshare Post ID and `get_post_analytics_by_social_id` for a native Social Post ID, do not pass one where the other is expected.
 6. **Error handling**: on any tool failure, call `explain_error` on the same connection as the failed call (rule 2: `mcp__plugin_ayrshare_ayrshare__explain_error` for the plugin's server, `mcp__ayrshare__explain_error` for a server the user registered) with the code and present the plain-language explanation. A 429 gets at most one retry after a short delay; never silently loop.
-7. **Auth errors**: if any tool returns 401/403, the API key is missing or invalid. Suggest the user run `/ayrshare:setup`, and surface the free-trial guidance from getting-started when there is no account.
+7. **Auth errors**: a 401, or a 403 saying the API key is not valid (code 102), means the key is wrong. Other 403s, such as a suspended account (code 276) or a missing plan or add-on, are not key problems: explain them with `explain_error`. For a wrong key, suggest the user run `/ayrshare:setup`, and surface the free-trial guidance from getting-started when there is no account.
 
 ## Out of scope
 
