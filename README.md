@@ -9,9 +9,9 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 claude plugin install ayrshare@ayrshare
 ```
 
-Then run `/ayrshare:setup` to add your API key and **restart Claude Code**. Scopes and other install paths are under [Installation](#installation) below.
+Requires Claude Code 2.1.119 or later. Then, inside Claude Code, run `/plugin configure ayrshare@ayrshare` and enter your API key. Claude Code stores it in your system's secure credential store. If you added Ayrshare from Claude's plugin directory on claude.ai instead, Claude Code knows it as `ayrshare@synced`, so run `/plugin configure ayrshare@synced`. Plugins from claude.ai appear in Claude Code 2.1.273 or later; on an older version, update Claude Code or install from this repository's marketplace as above. If your Claude Code doesn't open the settings from either command, run `/plugin`, open the **Installed** tab, select **ayrshare**, then **Configure options**. In the VS Code extension, type `/plugins` and click the gear icon on the **ayrshare** row. `/ayrshare:setup` walks you through it. Scopes and other install paths are under [Installation](#installation) below.
 
-After restarting, use the plugin by **asking in plain English** (e.g. "show my recent Instagram posts", "post this to LinkedIn tomorrow at 9am"); the tools fire on intent, and the trigger-skills route them. `/ayrshare:setup` is the only slash command, so there is no `/ayrshare:post` or `/ayrshare:get_post_history` to type.
+Then use the plugin by **asking in plain English** (e.g. "show my recent Instagram posts", "post this to LinkedIn tomorrow at 9am"); the tools fire on intent, and the trigger-skills route them. `/ayrshare:setup` is the only slash command, so there is no `/ayrshare:post` or `/ayrshare:get_post_history` to type.
 
 ## Overview
 
@@ -82,19 +82,25 @@ Then install the `ayrshare` plugin (`plugin@marketplace`) at the scope you want:
 | This project only | `claude plugin install ayrshare@ayrshare --scope local` | Current project, not committed to git |
 | This project (shared) | `claude plugin install ayrshare@ayrshare --scope project` | Current project, committed to git with the team |
 
-After installing, configure your API key:
+After installing, configure your API key inside Claude Code:
 
 ```text
-/ayrshare:setup
+/plugin configure ayrshare@ayrshare
 ```
 
-`/ayrshare:setup` will ask for your key and where to store it — choose the option that matches how you installed the plugin.
+The dialog asks for your **Ayrshare API key** (required) and three optional settings: a **Profile-Key** and your **X API Key** and **X API Secret** (see [Optional Configuration](#optional-configuration)). Each value is masked as you type it and kept in your system's secure credential store, not in a settings file or the chat. `claude plugin install` run from a shell does not show this dialog, so open it from a session afterwards. `/ayrshare:setup` explains each field.
+
+The command needs the plugin's full id. It is `ayrshare@ayrshare` when you installed from this repository's marketplace, as above, and `ayrshare@synced` when you added Ayrshare from Claude's plugin directory on claude.ai (which needs Claude Code 2.1.273 or later). `claude plugin list` shows which one you have.
+
+#### Upgrading from 0.2.2 or earlier
+
+Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from the `env` block of your `settings.json` (or your shell profile).
 
 ---
 
 ### Detailed walkthroughs
 
-#### Global — available in all your projects
+#### Global: available in all your projects
 
 ```bash
 # 1. Register the marketplace (one time)
@@ -103,16 +109,15 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install the plugin globally (user is the default scope)
 claude plugin install ayrshare@ayrshare
 
-# 3. Configure your API key (sets AYRSHARE_API_KEY in ~/.claude/settings.json)
-# Run inside Claude Code:
-/ayrshare:setup   # accept the default "Global" when asked
+# 3. Enter your API key. Run inside Claude Code:
+/plugin configure ayrshare@ayrshare
 ```
 
-Commands, agents, and skills are available in every project. The key is stored as `AYRSHARE_API_KEY` in `~/.claude/settings.json`, which is exactly what the plugin's MCP server reads. No project files are modified.
+Commands, agents, and skills are available in every project. No project files are modified.
 
 ---
 
-#### This project only — local, not committed
+#### This project only: local, not committed
 
 ```bash
 # 1. Register the marketplace (one time)
@@ -121,16 +126,15 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install scoped to the current project (not committed to git)
 claude plugin install ayrshare@ayrshare --scope local
 
-# 3. Configure your API key (sets AYRSHARE_API_KEY in ./.claude/settings.local.json)
-# Run inside Claude Code:
-/ayrshare:setup   # choose "This project" when asked
+# 3. Enter your API key. Run inside Claude Code:
+/plugin configure ayrshare@ayrshare
 ```
 
-Commands, agents, and skills only appear in this project. The key is written as `AYRSHARE_API_KEY` to `./.claude/settings.local.json` so it stays out of git. Ensure that path is in your `.gitignore` (a default `*.local` pattern does **not** match `settings.local.json`) and confirm `git status` does not list it. Use the committed `./.claude/settings.json` only if you deliberately want to share one key with your team via the repo (not recommended for a secret).
+Commands, agents, and skills only appear in this project.
 
 ---
 
-#### This project — committed with the team
+#### This project: committed with the team
 
 ```bash
 # 1. Register the marketplace (one time)
@@ -139,12 +143,11 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install scoped to the project (committed to git)
 claude plugin install ayrshare@ayrshare --scope project
 
-# 3. Configure your API key (sets your key in ./.claude/settings.local.json; gitignore that path)
-# Run inside Claude Code:
-/ayrshare:setup   # choose "This project" when asked
+# 3. Each developer enters their own API key. Run inside Claude Code:
+/plugin configure ayrshare@ayrshare
 ```
 
-The plugin is committed to the repo so the whole team gets it automatically. Each developer runs `/ayrshare:setup` individually to configure their own API key. Each developer's key should go in `./.claude/settings.local.json`, and that path should be added to `.gitignore` (a default `*.local` pattern does **not** match `settings.local.json`) so keys are never committed.
+The plugin is committed to the repo so the whole team gets it automatically. The repo holds no key: each developer enters their own, and it stays in that developer's secure credential store.
 
 ---
 
@@ -162,41 +165,41 @@ Add `--scope local` to limit it to the current project. The key is stored perman
 
 ---
 
-### Environment variable (CI / advanced)
+### Installing without a dialog (CI / headless)
 
-For CI environments or users who manage env vars via shell profile:
+On Claude Code 2.1.285 or later, install the plugin, then pass the values in a JSON file on standard input, so the key never appears on a command line:
 
 ```bash
-export AYRSHARE_API_KEY=your_key_here
 claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 claude plugin install ayrshare@ayrshare
+claude plugin configure ayrshare@ayrshare --values-stdin < values.json
 ```
 
-The plugin's `.mcp.json` uses `${AYRSHARE_API_KEY}` — Claude Code substitutes it at startup. No setup command needed.
+`values.json` holds a JSON object such as `{"api_key": "<your Ayrshare API key>"}`. Have your CI system write it from its secret store as a file only the job can read, and delete it once the command has run. Saved values stay in that Claude Code configuration between runs, and sending an empty value does not clear one. On a shared or reused runner, export `CLAUDE_CONFIG_DIR` as a fresh folder before the commands above, so a Profile-Key saved by an earlier job is never reused; the job then needs its own Claude Code sign-in. When the job ends, run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder.
+
+The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you leave out keep their saved values. Older Claude Code versions only take each setting as `--config KEY=VALUE` on `claude plugin install`. A value on the command line can show up in shell history and in the process list, so use `--config` only on a machine nobody else uses.
 
 ---
 
 ## Credentials by surface
 
-Install the plugin once. The plugin reads the same four variables (`AYRSHARE_API_KEY` is required; `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY`, and `X_TWITTER_OAUTH1_API_SECRET` are optional), but *where* you supply them depends on the surface, and the only fully supported surface today is **Claude Code**:
+The plugin has one API key setting (`api_key`, required) and three optional ones (`profile_key`, `x_api_key`, `x_api_secret`). Where you can enter them depends on the surface, and the fully supported surface today is **Claude Code**:
 
 | Surface | How credentials are supplied | Profile-Key | X BYOK |
 |---|---|---|---|
-| **Claude Code** (CLI / IDE / desktop "Code" tab) | `settings.json` `env` block via `/ayrshare:setup` (or set the vars yourself); a shell `export` before launch also works | `AYRSHARE_PROFILE_KEY` env, or per-call `profileKey` argument | `X_TWITTER_OAUTH1_API_KEY` + `X_TWITTER_OAUTH1_API_SECRET` env |
-| **Cowork / claude.ai desktop app** | **Not supported yet.** The skills install, but the API tools cannot authenticate: Cowork does not read `settings.json` `env` or expand `${VAR}`, the connector UI is OAuth-only (every call `403`), and a Claude Code managed-MCP config does not apply to Cowork. Needs OAuth (see [Roadmap](#roadmap)). | not available yet | not available yet |
-| **CI / headless** | OS environment variables set before launch | `AYRSHARE_PROFILE_KEY` env | the two env vars |
-
-A key set for Claude Code does **not** carry over to Cowork: `${VAR}` interpolation is a Claude Code feature, and Cowork has no supported way to supply credentials to the plugin's MCP server yet (see below). So the "Claude Code, all projects" option in `/ayrshare:setup` means all Claude Code projects, not all Claude surfaces.
+| **Claude Code** (CLI / IDE / desktop "Code" tab) | The plugin's settings dialog: `/plugin configure ayrshare@ayrshare` | `profile_key` setting, or per-call `profileKey` argument | `x_api_key` + `x_api_secret` settings |
+| **Cowork / claude.ai desktop app** | **Not supported yet.** The skills install, but Cowork does not prompt for plugin settings, so the plugin's MCP server does not load there. Needs OAuth (see [Roadmap](#roadmap)). | not available yet | not available yet |
+| **CI / headless** | `claude plugin configure --values-stdin` (2.1.285+), or `--config` on `claude plugin install` | `profile_key` | `x_api_key` + `x_api_secret` |
 
 ## Cowork and the desktop app (not supported yet)
 
-The plugin's skills install in Cowork and the claude.ai desktop app, but its API tools **cannot authenticate** there yet, so you cannot actually use them. Depending on the route the tools either fail to load or appear but return an auth error on every call. This is a platform limitation, not a setting you can change today:
+The plugin's skills install in Cowork and the claude.ai desktop app, but its API tools **cannot authenticate** there yet, so you cannot actually use them. This is a platform limitation, not a setting you can change today:
 
-- Cowork does not read `~/.claude/settings.json` `env` and does not expand `${VAR}`, so the bundled `.mcp.json` `Authorization` header stays empty and `/ayrshare:setup` never reaches it.
+- Cowork does not prompt for a plugin's settings, and it skips an MCP server that needs a setting with no default. The API key has no default, so the plugin's server does not load in Cowork.
 - Adding Ayrshare as a **claude.ai / org connector** loads the tools but offers no field for an `Authorization` header, so every call returns `403` (`code 102`).
 - A Claude Code **`managed-mcp.json`** (an admin/enterprise managed-MCP config file; see the [managed MCP docs](https://code.claude.com/docs/en/managed-mcp.md)) does **not** apply to Cowork; it is a Claude Code feature. Deploying one will not help Cowork, and it takes exclusive, machine-wide control of MCP that suppresses this plugin's own server and your other MCP servers **in Claude Code**. Do not use it for Cowork.
 
-The fix is per-user OAuth on the MCP endpoint (see [Roadmap](#roadmap)). Until it ships, use the plugin in **Claude Code** (CLI, IDE, or the desktop **Code** tab), where `/ayrshare:setup` configures it in seconds.
+The fix is per-user OAuth on the MCP endpoint (see [Roadmap](#roadmap)). Until it ships, use the plugin in **Claude Code** (CLI, IDE, or the desktop **Code** tab).
 
 ---
 
@@ -216,7 +219,7 @@ Trigger-based skills activate automatically on intent (even when you don't name 
 
 | Skill | Tools | Use when |
 |---|---|---|
-| `getting-started` | (cross-cutting) | Installing/configuring the plugin, any 401/403, "which credential do I use", onboarding a client, or missing `AYRSHARE_API_KEY`. Home of the auth model (API key, plus `Profile-Key` header or per-call `profileKey` argument), onboarding sequence, retry/`explain_error` rules, and the free-trial link. |
+| `getting-started` | (cross-cutting) | Installing/configuring the plugin, any 401/403, "which credential do I use", onboarding a client, or a missing API key. Home of the auth model (API key, plus `Profile-Key` header or per-call `profileKey` argument), onboarding sequence, retry/`explain_error` rules, and the free-trial link. |
 | `post` | `create_post`, `validate_post`, `get_post`, `update_post`, `retry_post` | Validating, posting, scheduling, editing, fetching, or retrying social content. |
 | `history` | `get_post_history`, `get_platform_history` | Listing posts sent via Ayrshare, or native posts (incl. ones not made via Ayrshare) and finding native Social Post IDs. |
 | `analytics` | `get_post_analytics`, `get_post_analytics_by_social_id`, `get_social_network_analytics` | Per-post analytics (by Ayrshare or native Social Post ID) or account/network analytics (followers, reach, impressions). |
@@ -236,20 +239,22 @@ The last two are multi-step **workflow** skills: they orchestrate the tools abov
 
 ## Optional Configuration
 
-The API key is supplied through the `AYRSHARE_API_KEY` environment variable, which the `ayrshare` server's `.mcp.json` interpolates into its `Authorization` header (`Bearer ${AYRSHARE_API_KEY}`). `/ayrshare:setup` sets that variable for you in a `settings.json` `env` block. Profile scoping has two equivalent inputs: a `Profile-Key` connection header (the default for every call) **or** an optional `profileKey` tool argument on a profile-scoped tool call (the argument wins when both are set; a few utility/AI tools such as `generate_post` and `recommend_hashtags` are excluded, see `getting-started`). The per-call argument lets an agent act as a client it learns at runtime without editing `.mcp.json` or restarting.
+The API key is the plugin's `api_key` setting, which the `ayrshare` server's `.mcp.json` puts into its `Authorization` header (`Bearer ${user_config.api_key}`). Profile scoping has two equivalent inputs: a `Profile-Key` connection header (the default for every call) **or** an optional `profileKey` tool argument on a profile-scoped tool call (the argument wins when both are set; a few utility/AI tools such as `generate_post` and `recommend_hashtags` are excluded, see `getting-started`). The per-call argument lets an agent act as a client it learns at runtime without changing settings or restarting.
 
-The bundled `.mcp.json` already declares the optional `Profile-Key` and X BYOK headers with empty defaults (`${VAR:-}`), so you enable each by setting the matching environment variable (same `settings.json` `env` block as `AYRSHARE_API_KEY`, on any OS) and restarting. Leave a variable unset and its header goes out empty, which the server treats as not provided. No `.mcp.json` editing, and nothing to redo after `claude plugin update`.
+The optional `Profile-Key` and X BYOK headers come from settings that default to empty, so you turn each one on by filling it in with `/plugin configure ayrshare@ayrshare`. Leave a setting empty and its header goes out empty, which the server treats as not provided. No `.mcp.json` editing, and nothing to redo after `claude plugin update`.
 
-### Act as a specific client profile (`AYRSHARE_PROFILE_KEY` or `profileKey` argument)
+### Act as a specific client profile (`profile_key` setting or `profileKey` argument)
 
-Set `AYRSHARE_PROFILE_KEY` (in your `settings.json` `env`) and restart to default the whole connection to one client; the bundled `Profile-Key: ${AYRSHARE_PROFILE_KEY:-}` header carries it. With it unset, calls act on the account's primary profile. To act as a client for a single call instead, pass `profileKey` as a tool argument on a profile-scoped call (it takes precedence over the header, no restart needed). The `generate_jwt_social_linking_url` tool uses the same target-profile value (required for that tool, via either input). You do not pass a private key or domain (the server derives them from your authenticated account), but the account must still have a **provisioned social-linking domain (Business/Enterprise)**; without one the call returns a "No social-linking domain is provisioned for this account" error.
+Fill in the **Profile-Key** setting to default the whole connection to one client; the bundled `Profile-Key: ${user_config.profile_key}` header carries it. With it empty, calls act on the account's primary profile.
+
+To go back to the primary profile, remove the plugin and add it again. Clearing the field doesn't work: a blank field in the settings dialog keeps the saved value, and so does an empty value sent with `--values-stdin`. Claude Code deletes saved values only when it removes the plugin's last installed scope, so uninstall it at every scope `claude plugin list` shows, for example `claude plugin uninstall ayrshare@ayrshare --scope project` (the default is `--scope user`). Then install it again at the same scopes and re-enter your API key, plus your X API Key and Secret if you use X. For a plugin added from Claude's plugin directory, remove it on claude.ai, add it again, and re-enter your settings. To act as a client for a single call instead, pass `profileKey` as a tool argument on a profile-scoped call (it takes precedence over the header, no restart needed). The `generate_jwt_social_linking_url` tool uses the same target-profile value (required for that tool, via either input). You do not pass a private key or domain (the server derives them from your authenticated account), but the account must still have a **provisioned social-linking domain (Business/Enterprise)**; without one the call returns a "No social-linking domain is provisioned for this account" error.
 
 ### Bring-your-own X/Twitter app (BYOK)
 
-Posting to X/Twitter requires your own X Developer App (the [X BYO-key mandate](https://www.ayrshare.com/docs/apis/overview#x/twitter-byo-credentials), effective March 31, 2026). After linking X with your app's credentials, set **both** environment variables and restart (values are never logged):
+Any X/Twitter call (posting, analytics, messages) requires your own X Developer App (the [X BYO-key mandate](https://www.ayrshare.com/docs/apis/overview#x/twitter-byo-credentials), effective March 31, 2026). After linking X with your app's credentials, fill in **both** settings with `/plugin configure ayrshare@ayrshare` (values are never logged):
 
-- `X_TWITTER_OAUTH1_API_KEY`: your X API Key (Consumer Key); sent as the `X-Twitter-OAuth1-Api-Key` header.
-- `X_TWITTER_OAUTH1_API_SECRET`: your X API Secret (Consumer Secret); sent as the `X-Twitter-OAuth1-Api-Secret` header.
+- **X API Key** (`x_api_key`): your X API Key (Consumer Key); sent as the `X-Twitter-OAuth1-Api-Key` header.
+- **X API Secret** (`x_api_secret`): your X API Secret (Consumer Secret); sent as the `X-Twitter-OAuth1-Api-Secret` header.
 
 These are the only X BYO headers Ayrshare uses: one key pair per Ayrshare account, sent on every X-targeting request (the same pair for all sub-profiles). Ayrshare does **not** use OAuth 2.0 client credentials here. Set both or neither: with neither set, an X/Twitter request returns error `419` (`x_credentials_required`); with only one set, it returns error `400`.
 
@@ -263,7 +268,13 @@ Facebook, Instagram, LinkedIn, X (Twitter), TikTok, YouTube, Pinterest, Reddit, 
 
 ## Roadmap
 
-- **Zero-config per-user auth (MCP OAuth 2.1): our top auth priority.** This is the only path that makes Cowork and the claude.ai desktop app first-class surfaces, so it is the next major auth investment for this plugin. We plan to add MCP-spec OAuth 2.1 (PKCE, dynamic client registration, authorization-server and protected-resource metadata) to `api.ayrshare.com/mcp`. Once shipped, an org-installed plugin authenticates per user on the first tool call ("Connect to Ayrshare", a dashboard login, a per-user token) on **every** surface, with no manual key step and no files. Claude Code already supports this flow via `/mcp` authenticate, so setup collapses to "install, then click Connect" everywhere. Until it lands, **Claude Code** is the supported surface (via the `settings.json` `env` block that `/ayrshare:setup` writes), and **Cowork and the claude.ai desktop app are not supported**, because the plugin's bearer-header MCP server cannot authenticate there.
+- **Zero-config per-user auth (MCP OAuth 2.1): our top auth priority.** This is the only path that makes Cowork and the claude.ai desktop app first-class surfaces, so it is the next major auth investment for this plugin. We plan to add MCP-spec OAuth 2.1 (PKCE, dynamic client registration, authorization-server and protected-resource metadata) to `api.ayrshare.com/mcp`. Once shipped, an org-installed plugin authenticates per user on the first tool call ("Connect to Ayrshare", a dashboard login, a per-user token) on **every** surface, with no manual key step and no files. Claude Code already supports this flow via `/mcp` authenticate, so setup collapses to "install, then click Connect" everywhere. Until it lands, **Claude Code** is the supported surface (via the plugin's settings dialog), and **Cowork and the claude.ai desktop app are not supported**, because the plugin's bearer-header MCP server cannot authenticate there.
+
+---
+
+## Privacy
+
+The plugin sends your requests, and the API key and optional settings above, only to the Ayrshare API at `https://api.ayrshare.com/mcp`. See the [Ayrshare privacy policy](https://www.ayrshare.com/privacy/).
 
 ---
 

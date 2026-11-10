@@ -43,7 +43,7 @@ For example: a profile named "Acme News" might have X, Instagram, and Facebook c
 
 1. `mcp__ayrshare__create_profile` — pass a `title`. Capture the returned `profileKey` immediately (it is sensitive).
 2. **Mint the linking URL**, call `mcp__ayrshare__generate_jwt_social_linking_url`, passing the `profileKey` from step 1 as the `profileKey` argument (no header change, no restart; the `Profile-Key` header is an equivalent alternative). It needs **no private key or domain**; the server derives those. It returns a hosted linking `url`; hand it to the client, who opens it in a browser to OAuth their accounts. Requires a provisioned social-linking domain (Business/Enterprise). (The dashboard / REST `generateJWT` are equivalent alternatives.)
-3. **Act as the new profile** for downstream post / analytics / history work, pass its `profileKey` as the tool argument on each call, or set the connection's `Profile-Key` header (and restart) to make it the default. `create_profile` and `list_profiles` stay account-level (API key only) and ignore both.
+3. **Act as the new profile** for downstream post / analytics / history work, pass its `profileKey` as the tool argument on each call, or fill in the plugin's Profile-Key setting with `/plugin configure ayrshare@ayrshare` to make it the default. `create_profile` and `list_profiles` stay account-level (API key only) and ignore both.
 4. **Verify** — `mcp__ayrshare__list_profiles` shows the profile and its linked platforms.
 
 ## Behavioral rules
@@ -52,7 +52,8 @@ For example: a profile named "Acme News" might have X, Instagram, and Facebook c
 2. **Capture and protect the `profileKey`** returned by `create_profile` — it is shown once and the API never returns it again (`list_profiles` omits keys for security). If it is lost, retrieve it from the Ayrshare dashboard rather than creating a duplicate profile.
 3. **Business plan required** — profile creation requires a Business plan. If a valid key fails, explain the plan requirement and surface the free-trial guidance from getting-started.
 4. **Error handling** — on any tool failure, call `mcp__ayrshare__explain_error` with the code and present the plain-language explanation; never auto-retry a write on a 4xx.
-5. **Auth errors** — if a call returns 401/403, the API key is missing or invalid. Suggest the user run `/ayrshare:setup`.
+5. **Auth errors**: a 401, or a 403 saying the API key is not valid (code 102), means the key is wrong. Suggest the user run `/ayrshare:setup`. Other 403s are not key problems, for example a suspended account (code 276) or a plan or add-on the account doesn't have: explain them with `explain_error` and don't send the user to change the key.
+6. **No Ayrshare tools at all**: if none of the Ayrshare tools are available, ask the user to run `/mcp` first. If it shows the Ayrshare server as failed or disconnected, the problem is the connection, not the key, and they can reconnect it there. Otherwise the plugin's API key setting is most likely empty (Claude Code does not start the server without it), or Claude Code is older than 2.1.119. This is the normal state right after updating from plugin version 0.2.2 or earlier. Then tell them to run `/ayrshare:setup`, which shows them how to enter the key; do not ask for the key in the chat.
 
 ## Out of scope
 
