@@ -43,6 +43,7 @@ This tool is reached over the same authenticated connection as every other Ayrsh
 
 ## Gotchas
 
+- **No Ayrshare tools at all is not an error code.** If `explain_error` and every other Ayrshare tool are missing, the plugin's API key setting is empty, so Claude Code did not start the server (or Claude Code is older than 2.1.119). This is the normal state right after updating from plugin version 0.2.2 or earlier, which read the key from an environment variable. Tell the user to run `/ayrshare:setup`; do not ask for the key in the chat. See *Missing credentials* in `../getting-started/SKILL.md`.
 - **Don't echo raw error codes at the user.** A bare `Error 272` is unhelpful. Always run it through `explain_error` and present the cause + fix.
 - **The classification drives whether a retry is even sensible.** A `developer-fix` or `user-action` error will not resolve on retry — only `network`-class errors warrant the single transient retry. Never auto-retry a failed write on a 4xx just because you decoded it.
 - **Provide `platform` for accuracy.** Omitting it still works but may give a more generic explanation when the code is platform-specific.

@@ -26,7 +26,7 @@ The four settings:
    /plugin configure ayrshare@ayrshare
    ```
 
-   If they installed the plugin from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**.
+   If they added Ayrshare from Claude's plugin directory on claude.ai, Claude Code knows it as `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced`. `claude plugin list` shows the id they have. With any other id, or if the command doesn't open the dialog, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**.
 
    Then walk them through the fields:
    - **Ayrshare API key**: required.
@@ -34,6 +34,8 @@ The four settings:
    - **X API Key** and **X API Secret**: ask "Do you use X/Twitter through Ayrshare (posting, analytics or messages)?" If yes, they enter both. If no, they leave both empty. Do not present skipping as recommended: anyone who makes any X call needs the pair.
 
    To change a value later, they open the same dialog again. Leaving a field as it is keeps its saved value.
+
+   To stop defaulting to a client profile, they first try emptying the **Profile-Key** field in the dialog and saving. If calls still act as that client, the sure way is to remove the plugin, which deletes all its saved values, then add it again and re-enter the API key: `claude plugin uninstall ayrshare@ayrshare` and `claude plugin install ayrshare@ayrshare` (for a plugin added from Claude's plugin directory, remove and re-add it there instead). An empty value sent with `--values-stdin` does not clear a saved one.
 
 3. **If they set up the plugin with version 0.2.2 or earlier**, those versions read the key from environment variables, and this version no longer does. Tell them their old `AYRSHARE_API_KEY`, `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET` entries now do nothing, and that they can delete them from wherever they put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or a shell profile. Let them do this themselves; do not open or read those files.
 
@@ -51,4 +53,4 @@ The four settings:
 
 - One mechanism: the four settings above are exactly what the plugin's bundled `.mcp.json` reads (`${user_config.api_key}`, `${user_config.profile_key}`, `${user_config.x_api_key}`, `${user_config.x_api_secret}`). No duplicate servers and no settings files.
 - The three optional settings default to empty. An empty header is treated by the server as not provided, so leaving one empty has no effect and causes no error.
-- To set the values from a shell without a dialog (for example on a CI machine), on Claude Code 2.1.285 or later install the plugin, then pipe a JSON object of the values into `claude plugin configure ayrshare@ayrshare --values-stdin`, reading the key from the CI system's secret store. Saved values persist between runs and an empty value does not clear one, so on a reused runner export a fresh `CLAUDE_CONFIG_DIR` before installing (the job then needs its own Claude Code sign-in), and at the end run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder. Older versions only take `--config api_key=...` on `claude plugin install`; a value on the command line can show up in shell history and in the process list, so use that only on a machine nobody else uses.
+- To set the values from a shell without a dialog (for example on a CI machine), on Claude Code 2.1.285 or later install the plugin, then pass a JSON file of the values on standard input: `claude plugin configure ayrshare@ayrshare --values-stdin < values.json`. The CI system writes that file from its secret store, readable only by the job, and deletes it afterwards. Saved values persist between runs and an empty value does not clear one, so on a reused runner export a fresh `CLAUDE_CONFIG_DIR` before installing (the job then needs its own Claude Code sign-in), and at the end run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder. Older versions only take `--config api_key=...` on `claude plugin install`; a value on the command line can show up in shell history and in the process list, so use that only on a machine nobody else uses.

@@ -32,7 +32,7 @@ After installing, open the plugin's settings dialog inside Claude Code:
 /plugin configure ayrshare@ayrshare
 ```
 
-If the plugin came from a different marketplace name, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**. `claude plugin install` run from a shell does not show the dialog.
+If the plugin was added from Claude's plugin directory on claude.ai, Claude Code knows it as `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced`; `claude plugin list` shows the id. With any other id, or if the command doesn't open the dialog, the same dialog is under `/plugin`, on the **Installed** tab: select **ayrshare**, then **Configure options**. `claude plugin install` run from a shell does not show the dialog.
 
 The dialog asks for the **Ayrshare API key** (required) and three optional settings (see *Optional configuration* below). Claude Code masks each value as it is typed and stores it in the system's secure credential store, not in a settings file. The plugin's bundled `.mcp.json` reads the values from there, so there is nothing else to set. `/ayrshare:setup` explains each field; it never asks for a key in the chat.
 
@@ -65,15 +65,15 @@ Add `--scope local` to limit it to the current project. The key is stored perman
 
 ## Option 3: Install without a dialog (CI / headless)
 
-On Claude Code 2.1.285 or later, install the plugin, then pipe the values in as JSON on standard input, so the key never appears on a command line:
+On Claude Code 2.1.285 or later, install the plugin, then pass the values in a JSON file on standard input, so the key never appears on a command line:
 
 ```bash
 claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 claude plugin install ayrshare@ayrshare
-printf '{"api_key":"%s"}' "$AYRSHARE_API_KEY" | claude plugin configure ayrshare@ayrshare --values-stdin
+claude plugin configure ayrshare@ayrshare --values-stdin < values.json
 ```
 
-Here `$AYRSHARE_API_KEY` is a variable your CI system fills from its secret store; the plugin itself does not read it. Saved values stay in that Claude Code configuration between runs, and sending an empty value does not clear one. On a shared or reused runner, export `CLAUDE_CONFIG_DIR` as a fresh folder before the commands above, so a Profile-Key saved by an earlier job is never reused; the job then needs its own Claude Code sign-in. When the job ends, run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder.
+`values.json` holds a JSON object such as `{"api_key": "<your Ayrshare API key>"}`. Have your CI system write it from its secret store as a file only the job can read, and delete it once the command has run. Saved values stay in that Claude Code configuration between runs, and sending an empty value does not clear one. On a shared or reused runner, export `CLAUDE_CONFIG_DIR` as a fresh folder before the commands above, so a Profile-Key saved by an earlier job is never reused; the job then needs its own Claude Code sign-in. When the job ends, run `claude plugin uninstall ayrshare@ayrshare`, which removes the saved values, then delete the folder.
 
 The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you leave out keep their saved values. Older Claude Code versions only take each setting as `--config KEY=VALUE` on `claude plugin install`. A value on the command line can show up in shell history and in the process list, so use `--config` only on a machine nobody else uses.
 
@@ -87,7 +87,7 @@ which the server treats as "not provided" (no effect, no error), so there is no 
 
 | Setting | Description |
 |---|---|
-| **Profile-Key** (`profile_key`) | Sets the `Profile-Key` header so the whole connection defaults to a specific client profile. For one-off or runtime profile selection, pass `profileKey` as a tool argument on a profile-scoped call instead; it takes precedence over the header and needs no restart. See the auth model in SKILL.md. |
+| **Profile-Key** (`profile_key`) | Sets the `Profile-Key` header so the whole connection defaults to a specific client profile. For one-off or runtime profile selection, pass `profileKey` as a tool argument on a profile-scoped call instead; it takes precedence over the header and needs no restart. To go back to the primary profile, empty the field in the dialog and save; if calls still act as that client, uninstall and reinstall the plugin (which deletes all saved values) and re-enter the API key. An empty value sent with `--values-stdin` does not clear it. See the auth model in SKILL.md. |
 | **X API Key** (`x_api_key`) + **X API Secret** (`x_api_secret`) | Your X Developer App's OAuth 1.0a key pair (API Key / Consumer Key and API Secret / Consumer Secret), required for any X/Twitter call (posting, analytics, messages) under the BYO-key mandate (effective March 31, 2026). These map to the `X-Twitter-OAuth1-Api-Key` / `X-Twitter-OAuth1-Api-Secret` headers, the only X BYO headers Ayrshare uses (one key pair per account, on every X-targeting request; no OAuth 2.0 client credentials or per-user access tokens). Values are never logged. Set **both** or neither: neither set → error `419` (`x_credentials_required`); only one set → error `400`. |
 
 ## Notes

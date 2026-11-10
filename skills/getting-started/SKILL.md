@@ -87,7 +87,7 @@ Then inside Claude Code, open the plugin's settings dialog and enter the key:
 ```text
 /plugin configure ayrshare@ayrshare
 ```
-The value is masked and stored in the system's secure credential store. Never ask the user to paste the key into the chat. `claude plugin install` from a shell does not show the dialog, so it has to be opened from a session. `/ayrshare:setup` walks the user through the fields.
+If the user added Ayrshare from Claude's plugin directory on claude.ai, the plugin's id is `ayrshare@synced`, so the command is `/plugin configure ayrshare@synced` (`claude plugin list` shows the id; the dialog is also under `/plugin` → **Installed** → **ayrshare** → **Configure options**). The value is masked and stored in the system's secure credential store. Never ask the user to paste the key into the chat. `claude plugin install` from a shell does not show the dialog, so it has to be opened from a session. `/ayrshare:setup` walks the user through the fields.
 
 **MCP only (no plugin)** — raw tools, no commands/agents/skills:
 ```bash
@@ -96,7 +96,7 @@ claude mcp add ayrshare --transport http \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
-**CI / headless:** install the plugin, then pipe the values as JSON into `claude plugin configure ayrshare@ayrshare --values-stdin` (Claude Code 2.1.285+), filled from the CI system's secret store so the key never sits on a command line (details in `references/install.md`).
+**CI / headless:** install the plugin, then run `claude plugin configure ayrshare@ayrshare --values-stdin < values.json` (Claude Code 2.1.285+), where the CI system writes `values.json` from its secret store, so the key never sits on a command line (details in `references/install.md`).
 
 **Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare`, Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
 
