@@ -53,7 +53,7 @@ For example: a profile named "Acme News" might have X, Instagram, and Facebook c
 3. **Business plan required** — profile creation requires a Business plan. If a valid key fails, explain the plan requirement and surface the free-trial guidance from getting-started.
 4. **Error handling** — on any tool failure, call `mcp__ayrshare__explain_error` with the code and present the plain-language explanation; never auto-retry a write on a 4xx.
 5. **Auth errors** — if a call returns 401/403, the API key is invalid. Suggest the user run `/ayrshare:setup`.
-6. **No Ayrshare tools at all** — if none of the Ayrshare tools are available, the plugin's API key setting is empty (Claude Code does not start the server without it), or Claude Code is older than 2.1.119. This is the normal state right after updating from plugin version 0.2.2 or earlier. Tell the user to run `/ayrshare:setup`, which shows them how to enter the key; do not ask for the key in the chat.
+6. **No Ayrshare tools at all**: if none of the Ayrshare tools are available, the plugin's API key setting is empty (Claude Code does not start the server without it), or Claude Code is older than 2.1.119. This is the normal state right after updating from plugin version 0.2.2 or earlier. Tell the user to run `/ayrshare:setup`, which shows them how to enter the key; do not ask for the key in the chat.
 
 ## Out of scope
 

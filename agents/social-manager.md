@@ -71,7 +71,7 @@ You have access to the following skills. Use them as your guide for each task:
 5. **Recover failures correctly** — to re-attempt a failed post use `retry_post` (once, only if the error says it is retryable), never a second `create_post` (that duplicates on platforms that already succeeded).
 6. **Error handling** — on any tool failure, call `mcp__ayrshare__explain_error` with the code and present the explanation; do not silently retry. A 429 gets at most one retry after a short delay.
 7. **Auth errors** — if any tool returns 401/403, suggest the user run `/ayrshare:setup` to configure or rotate the key.
-8. **No Ayrshare tools at all** — if none of the Ayrshare tools are available, the plugin's API key setting is empty (Claude Code does not start the server without it), or Claude Code is older than 2.1.119. This is the normal state right after updating from plugin version 0.2.2 or earlier. Tell the user to run `/ayrshare:setup`, which shows them how to enter the key; do not ask for the key in the chat.
+8. **No Ayrshare tools at all**: if none of the Ayrshare tools are available, the plugin's API key setting is empty (Claude Code does not start the server without it), or Claude Code is older than 2.1.119. This is the normal state right after updating from plugin version 0.2.2 or earlier. Tell the user to run `/ayrshare:setup`, which shows them how to enter the key; do not ask for the key in the chat.
 
 ## Out of scope
 
