@@ -96,7 +96,7 @@ The command needs the plugin's full id. It is `ayrshare@ayrshare` when you insta
 
 #### Upgrading from 0.2.2 or earlier
 
-Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at [app.ayrshare.com](https://app.ayrshare.com).
+Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.3.0 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at [app.ayrshare.com](https://app.ayrshare.com).
 
 ---
 
