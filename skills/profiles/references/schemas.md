@@ -1,6 +1,6 @@
 # Profiles — Input Schemas & Examples
 
-These tools run against the Ayrshare MCP server at `https://api.ayrshare.com/mcp` and authenticate with the Business API key (the `Authorization: Bearer ${AYRSHARE_API_KEY}` header). `create_profile` and `list_profiles` are account-level and **ignore** `Profile-Key` (and take no `profileKey` argument). `generate_jwt_social_linking_url` is profile-scoped: it mints the linking URL for the target sub-profile, supplied as the **`profileKey` argument** or the **`Profile-Key` connection header** (required; the argument wins), and needs no signing credentials (the server derives the private key and domain). No `profileKey` is ever used as the auth key. Endpoints below are the underlying Ayrshare REST routes each tool maps to.
+These tools run against the Ayrshare MCP server at `https://api.ayrshare.com/mcp` and authenticate with the Business API key (the `Authorization: Bearer` header, from the plugin's `api_key` setting). `create_profile` and `list_profiles` are account-level and **ignore** `Profile-Key` (and take no `profileKey` argument). `generate_jwt_social_linking_url` is profile-scoped: it mints the linking URL for the target sub-profile, supplied as the **`profileKey` argument** or the **`Profile-Key` connection header** (required; the argument wins), and needs no signing credentials (the server derives the private key and domain). No `profileKey` is ever used as the auth key. Endpoints below are the underlying Ayrshare REST routes each tool maps to.
 
 ## `mcp__ayrshare__create_profile`
 
@@ -39,7 +39,7 @@ Example call (team profile with white-label chrome):
 }
 ```
 
-The response contains the new profile's sensitive `profileKey` (and `refId`). **Capture the `profileKey`** — it is shown once and the API cannot return it again (a lost key is recoverable only from the Ayrshare dashboard), and it is what you place in the `Profile-Key` connection header to operate as this profile downstream (posting, analytics, history). Treat it like a credential.
+The response contains the new profile's sensitive `profileKey` (and `refId`). **Capture the `profileKey`** — it is shown once and the API cannot return it again (a lost key is recoverable only from the Ayrshare dashboard), and it is what you pass as the `profileKey` argument, or save as the plugin's Profile-Key setting (sent as the `Profile-Key` header after `/reload-plugins`), to operate as this profile downstream (posting, analytics, history). Treat it like a credential.
 
 ## `mcp__ayrshare__list_profiles`
 

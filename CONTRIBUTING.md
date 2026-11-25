@@ -14,7 +14,7 @@ Never commit:
   profile under the account)
 - `.env` files (already covered by `.gitignore`)
 
-Use placeholders in committed files: `${AYRSHARE_API_KEY}`, `Bearer KEY`, etc.
+Use placeholders in committed files: `${user_config.api_key}`, `Bearer KEY`, etc.
 
 ## Enable local secret scanning (one-time, per clone)
 

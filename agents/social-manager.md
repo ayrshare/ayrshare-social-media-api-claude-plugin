@@ -70,7 +70,8 @@ You have access to the following skills. Use them as your guide for each task:
 4. **Media is referenced by URL** — there is no upload/library/resize tool. Use `validate_media` to confirm a public media URL is reachable, then pass it in `create_post`'s `mediaUrls` array.
 5. **Recover failures correctly** — to re-attempt a failed post use `retry_post` (once, only if the error says it is retryable), never a second `create_post` (that duplicates on platforms that already succeeded).
 6. **Error handling** — on any tool failure, call `mcp__ayrshare__explain_error` with the code and present the explanation; do not silently retry. A 429 gets at most one retry after a short delay.
-7. **Auth errors** — if any tool returns 401/403, suggest the user run `/ayrshare:setup` to configure or rotate the key.
+7. **Auth errors**: a 401, or a 403 saying the API key is not valid (code 102), means the key is wrong. Suggest the user run `/ayrshare:setup` to configure or rotate it. Other 403s are not key problems, for example a suspended account (code 276) or a plan or add-on the account doesn't have: explain them with `explain_error` and don't send the user to change the key.
+8. **No Ayrshare tools at all**: if none of the Ayrshare tools are available, stop and say so in one reply that covers both causes, since you cannot wait for the user to check: (1) if `/mcp` shows the Ayrshare server as failed or disconnected, reconnect it there; (2) otherwise the plugin's API key setting is most likely empty (Claude Code does not start the server without it; normal right after updating from plugin version 0.2.2 or earlier), or Claude Code is older than 2.1.119, so run `/ayrshare:setup`, then `/reload-plugins` after saving. Do not ask for the key in the chat.
 
 ## Out of scope
 

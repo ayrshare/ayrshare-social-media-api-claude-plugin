@@ -69,7 +69,7 @@ Each is an optional object applied only when its platform is in `platforms`: `in
 
 ## Profile scoping (not a post-body field)
 
-The profile is selected by the optional `profileKey` tool argument or the `Profile-Key` connection header in the MCP client config (`.mcp.json` headers); the argument wins when both are set. With neither, calls act under the account's primary/Business profile. See `../../getting-started/SKILL.md`.
+The profile is selected by the optional `profileKey` tool argument or the `Profile-Key` connection header (with the plugin, its Profile-Key setting, entered with `/plugin configure ayrshare@ayrshare` and loaded with `/reload-plugins`); the argument wins when both are set. With neither, calls act under the account's primary/Business profile. See `../../getting-started/SKILL.md`.
 
 ## Lifecycle tools (key off the returned `id`)
 
