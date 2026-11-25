@@ -47,15 +47,15 @@
     },
     "x_api_key": {
       "type": "string",
-      "title": "X API Key (optional)",
-      "description": "Your X Developer App's API Key (Consumer Key), needed for any X/Twitter call (posting, analytics, messages). Set it together with the X API Secret, or leave both empty. Once saved, a blank field keeps the old value.",
+      "title": "X Consumer Key (optional)",
+      "description": "Your X app's Consumer Key (also called API Key), from the X Developer Console under OAuth 1.0 Keys. Needed for any X/Twitter call (posting, analytics, messages). Set it together with the X Consumer Secret, or leave both empty. Once saved, a blank field keeps the old value.",
       "default": "",
       "sensitive": true
     },
     "x_api_secret": {
       "type": "string",
-      "title": "X API Secret (optional)",
-      "description": "Your X Developer App's API Secret (Consumer Secret), needed for any X/Twitter call (posting, analytics, messages). Set it together with the X API Key, or leave both empty. Once saved, a blank field keeps the old value.",
+      "title": "X Consumer Secret (optional)",
+      "description": "Your X app's Consumer Secret (also called API Key Secret), shown with the Consumer Key in the X Developer Console. Needed for any X/Twitter call (posting, analytics, messages). Set it together with the X Consumer Key, or leave both empty. Once saved, a blank field keeps the old value.",
       "default": "",
       "sensitive": true
     }

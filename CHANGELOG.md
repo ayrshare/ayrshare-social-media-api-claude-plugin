@@ -2,7 +2,7 @@
 
 ## 0.3.0
 
-- You now enter your Ayrshare API key in the plugin's own settings dialog, where Claude Code masks it and keeps it in your system's secure credential store. The optional Profile-Key and X API Key and Secret are settings in the same dialog.
+- You now enter your Ayrshare API key in the plugin's own settings dialog, where Claude Code masks it and keeps it in your system's secure credential store. The optional Profile-Key and X Consumer Key and Secret are settings in the same dialog.
 - The plugin no longer reads `AYRSHARE_API_KEY`, `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` or `X_TWITTER_OAUTH1_API_SECRET` from your environment.
 - `/ayrshare:setup` now walks you through the settings dialog and no longer asks you to paste a key into the chat.
 - The plugin now has an icon and links to the Ayrshare privacy policy, terms, documentation and support pages.
