@@ -38,7 +38,7 @@ If the plugin was added from Claude's plugin directory on claude.ai, Claude Code
 
 The dialog asks for the **Ayrshare API key** (required) and three optional settings (see *Optional configuration* below). Claude Code masks each value as it is typed and stores it in the system's secure credential store, not in a settings file. The plugin's bundled `.mcp.json` reads the values from there, so there is nothing else to set. `/ayrshare:setup` explains each field; it never asks for a key in the chat.
 
-Saving reloads the plugin and reconnects its server. If a tool still returns 401/403, run `/reload-plugins` or restart Claude Code, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read; `list_profiles` needs a Business plan) to confirm.
+After saving, run `/reload-plugins` (or restart Claude Code) so the server connects with the new values. Then run `mcp__ayrshare__get_post_history` (a plan-agnostic read; `list_profiles` needs a Business plan) to confirm.
 
 To rotate the key later, open the same dialog again.
 

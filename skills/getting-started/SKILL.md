@@ -100,7 +100,7 @@ claude mcp add ayrshare --transport http \
 
 **Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare` (or `ayrshare@synced`), Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
 
-> **Verification gotcha:** saving the settings reloads the plugin and reconnects the server. If a tool still returns 401/403 right after, run `/reload-plugins` or restart Claude Code, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
+> **Verification gotcha:** saving the settings does not by itself reconnect the server. Have the user run `/reload-plugins` (or restart Claude Code) after saving, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
 
 ## Canonical client onboarding sequence
 
