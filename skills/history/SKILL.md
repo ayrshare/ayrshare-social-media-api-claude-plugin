@@ -24,7 +24,7 @@ Full input schemas and example payloads/responses are in [`references/schemas.md
 
 ## Auth
 
-Both tools are **profile-scoped**: choose the profile with an optional `profileKey` tool argument or the `Profile-Key` connection header (the argument wins when both are set). Pass `profileKey` on the call to act as one client for that call, or set the plugin's Profile-Key setting (`/plugin configure`; it is sent as the `Profile-Key` header) to default the whole connection to it; with neither, calls act on the account's primary/Business profile. Full model: `../getting-started/SKILL.md`.
+Both tools are **profile-scoped**: choose the profile with an optional `profileKey` tool argument or the `Profile-Key` connection header (the argument wins when both are set). Pass `profileKey` on the call to act as one client for that call, or set the plugin's Profile-Key setting (`/plugin configure ayrshare@ayrshare`, then `/reload-plugins`; it is sent as the `Profile-Key` header) to default the whole connection to it; with neither, calls act on the account's primary/Business profile. Full model: `../getting-started/SKILL.md`.
 
 **Exception, `get_platform_history` `userId`/`userName` (Twitter/X):** when you target a specific X user by `userId` (numeric Twitter ID) or `userName` (handle), that lookup must use the **API key only**; it is not profile-scoped. Supplying a `profileKey` (argument *or* `Profile-Key` header) alongside `userId`/`userName` returns **Error 400**. Every other history call (and `get_post_history` entirely) is profile-scoped as above. See `references/schemas.md`.
 

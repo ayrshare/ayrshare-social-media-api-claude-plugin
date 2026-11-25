@@ -22,7 +22,7 @@ Unlike most Ayrshare MCP tools, neither of these takes a per-call `profileKey` a
 
 ## Auth
 
-These two tools are exceptions to the per-call `profileKey` argument that the profile-scoped tools accept: **`generate_post` and `recommend_hashtags` do NOT take a `profileKey` argument.** `recommend_hashtags` is still scoped by the connection's `Profile-Key` header (with the plugin, its Profile-Key setting): it uses that profile's linked TikTok account; omit the header to use the account's primary/Business profile. `generate_post` is account-level AI drafting. See *Which tools accept `profileKey`* in `../getting-started/SKILL.md`.
+These two tools are exceptions to the per-call `profileKey` argument that the profile-scoped tools accept: **`generate_post` and `recommend_hashtags` do NOT take a `profileKey` argument.** `recommend_hashtags` is still scoped by the connection's `Profile-Key` header (with the plugin, its Profile-Key setting; run `/reload-plugins` after changing it): it uses that profile's linked TikTok account; omit the header to use the account's primary/Business profile. `generate_post` is account-level AI drafting. See *Which tools accept `profileKey`* in `../getting-started/SKILL.md`.
 
 ## Usage guidance
 

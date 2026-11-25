@@ -39,7 +39,7 @@ Example call (team profile with white-label chrome):
 }
 ```
 
-The response contains the new profile's sensitive `profileKey` (and `refId`). **Capture the `profileKey`** — it is shown once and the API cannot return it again (a lost key is recoverable only from the Ayrshare dashboard), and it is what you pass as the `profileKey` argument, or save as the plugin's Profile-Key setting (sent as the `Profile-Key` header), to operate as this profile downstream (posting, analytics, history). Treat it like a credential.
+The response contains the new profile's sensitive `profileKey` (and `refId`). **Capture the `profileKey`** — it is shown once and the API cannot return it again (a lost key is recoverable only from the Ayrshare dashboard), and it is what you pass as the `profileKey` argument, or save as the plugin's Profile-Key setting (sent as the `Profile-Key` header after `/reload-plugins`), to operate as this profile downstream (posting, analytics, history). Treat it like a credential.
 
 ## `mcp__ayrshare__list_profiles`
 
