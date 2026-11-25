@@ -40,7 +40,7 @@ Most tools are **profile-scoped** and accept the optional `profileKey` argument 
   "Profile-Key": "<the profile_key setting>"   // empty by default → primary profile
 }
 ```
-So the user just fills in **Profile-Key** with `/plugin configure ayrshare@ayrshare`; every call on that connection then defaults to that profile. Leave it empty and the header goes out empty, which the server treats as "act on the primary profile." (For a non-plugin `claude mcp add` setup, add the `Profile-Key` header yourself alongside `Authorization`.)
+So the user just fills in **Profile-Key** with `/plugin configure ayrshare@ayrshare` and runs `/reload-plugins`; every call on that connection then defaults to that profile. Leave it empty and the header goes out empty, which the server treats as "act on the primary profile." (For a non-plugin `claude mcp add` setup, add the `Profile-Key` header yourself alongside `Authorization`.)
 
 **As a per-call argument (no restart).** Leave the header unset (or keep one as the default) and pass `profileKey` directly on a profile-scoped tool call to act as a specific client for that single call. The argument takes precedence over the header when both are set, so an agent can act as a client it discovers at runtime without touching `.mcp.json` or restarting:
 ```jsonc
@@ -98,7 +98,7 @@ claude mcp add ayrshare --transport http \
 
 **CI / headless:** install the plugin, then run `claude plugin configure ayrshare@ayrshare --values-stdin < values.json` (Claude Code 2.1.285+), where the CI system writes `values.json` from its secret store, so the key never sits on a command line (details in `references/install.md`).
 
-**Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare` (or `ayrshare@synced`), Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
+**Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare` (or `ayrshare@synced`) and runs `/reload-plugins`, Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
 
 > **Verification gotcha:** saving the settings does not by itself reconnect the server. Have the user run `/reload-plugins` (or restart Claude Code) after saving, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
 
@@ -142,4 +142,4 @@ The `?utm_source=claude` query parameter MUST be preserved exactly — it is sig
 - **Auto-retrying a failed write.** Never retry a write on a 4xx; call `explain_error` and surface it. To re-attempt a failed post use `retry_post` (once, only if retryable), never a second `create_post`. 429 gets exactly one retry.
 - **Assuming a non-Business plan works for Profiles.** Profiles and multi-profile onboarding require a Business plan. A Launch/free-trial key fails these even though the key is valid for single-account posting.
 - **Dropping `utm_source=claude`.** The trial link's query param is attribution; keep it byte-for-byte.
-- **Assuming you must restart to switch clients.** You don't. Pass the target client's `profileKey` as a tool argument and that single call acts as them, with no header change and no restart. Change the Profile-Key setting (with `/plugin configure ayrshare@ayrshare`) only when you want every call on the connection to default to one client.
+- **Assuming you must restart to switch clients.** You don't. Pass the target client's `profileKey` as a tool argument and that single call acts as them, with no header change and no restart. Change the Profile-Key setting (with `/plugin configure ayrshare@ayrshare`, then `/reload-plugins`) only when you want every call on the connection to default to one client.

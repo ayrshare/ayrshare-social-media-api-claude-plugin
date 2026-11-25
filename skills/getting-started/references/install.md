@@ -40,7 +40,7 @@ The dialog asks for the **Ayrshare API key** (required) and three optional setti
 
 After saving, run `/reload-plugins` (or restart Claude Code) so the server connects with the new values. Then run `mcp__ayrshare__get_post_history` (a plan-agnostic read; `list_profiles` needs a Business plan) to confirm.
 
-To rotate the key later, open the same dialog again.
+To rotate the key later, open the same dialog again and run `/reload-plugins` after saving.
 
 Do not also run `claude mcp add`; a separate server is unnecessary and is the
 common cause of a `403 / code 102` after setup. The plugin already provides its own
@@ -51,7 +51,7 @@ extra server, never the plugin's own and never the docs MCP.
 
 ### Upgrading from 0.2.2 or earlier
 
-This version needs Claude Code 2.1.119 or later. Earlier plugin versions read the key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). This version no longer reads them, and its tools do not load until you enter the key. Enter the same values once with `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory), then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at app.ayrshare.com.
+This version needs Claude Code 2.1.119 or later. Earlier plugin versions read the key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). This version no longer reads them, and its tools do not load until you enter the key. Enter the same values once with `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory), run `/reload-plugins`, then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at app.ayrshare.com.
 
 ## Option 2: MCP only (no plugin)
 
@@ -83,7 +83,7 @@ The keys are `api_key`, `profile_key`, `x_api_key` and `x_api_secret`; keys you 
 
 The plugin's bundled `.mcp.json` sends these optional headers from settings that default to
 empty, so you turn each feature on by filling in the setting with
-`/plugin configure ayrshare@ayrshare`. Leave a setting empty and its header is sent empty,
+`/plugin configure ayrshare@ayrshare`, then running `/reload-plugins`. Leave a setting empty and its header is sent empty,
 which the server treats as "not provided" (no effect, no error), so there is no manual
 `.mcp.json` editing and nothing to undo on `claude plugin update`.
 

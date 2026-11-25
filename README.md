@@ -9,7 +9,7 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 claude plugin install ayrshare@ayrshare
 ```
 
-Requires Claude Code 2.1.119 or later. Then, inside Claude Code, run `/plugin configure ayrshare@ayrshare` and enter your API key. Claude Code stores it in your system's secure credential store. If you added Ayrshare from Claude's plugin directory on claude.ai instead, Claude Code knows it as `ayrshare@synced`, so run `/plugin configure ayrshare@synced`. Plugins from claude.ai appear in Claude Code 2.1.273 or later; on an older version, update Claude Code or install from this repository's marketplace as above. If your Claude Code doesn't open the settings from either command, run `/plugin`, open the **Installed** tab, select **ayrshare**, then **Configure options**. In the VS Code extension, type `/plugins` and click the gear icon on the **ayrshare** row. `/ayrshare:setup` walks you through it. Scopes and other install paths are under [Installation](#installation) below.
+Requires Claude Code 2.1.119 or later. Then, inside Claude Code, run `/plugin configure ayrshare@ayrshare` and enter your API key, then run `/reload-plugins` (or restart Claude Code) so the tools load. Claude Code stores the key in your system's secure credential store. If you added Ayrshare from Claude's plugin directory on claude.ai instead, Claude Code knows it as `ayrshare@synced`, so run `/plugin configure ayrshare@synced`. Plugins from claude.ai appear in Claude Code 2.1.273 or later; on an older version, update Claude Code or install from this repository's marketplace as above. If your Claude Code doesn't open the settings from either command, run `/plugin`, open the **Installed** tab, select **ayrshare**, then **Configure options**. In the VS Code extension, type `/plugins` and click the gear icon on the **ayrshare** row. `/ayrshare:setup` walks you through it. Scopes and other install paths are under [Installation](#installation) below.
 
 Then use the plugin by **asking in plain English** (e.g. "show my recent Instagram posts", "post this to LinkedIn tomorrow at 9am"); the tools fire on intent, and the trigger-skills route them. `/ayrshare:setup` is the only slash command, so there is no `/ayrshare:post` or `/ayrshare:get_post_history` to type.
 
@@ -90,13 +90,13 @@ After installing, configure your API key inside Claude Code:
 /plugin configure ayrshare@ayrshare
 ```
 
-The dialog asks for your **Ayrshare API key** (required) and three optional settings: a **Profile-Key** and your **X Consumer Key** and **X Consumer Secret** (see [Optional Configuration](#optional-configuration)). Each value is masked as you type it and kept in your system's secure credential store, not in a settings file or the chat. `claude plugin install` run from a shell does not show this dialog, so open it from a session afterwards. `/ayrshare:setup` explains each field.
+The dialog asks for your **Ayrshare API key** (required) and three optional settings: a **Profile-Key** and your **X Consumer Key** and **X Consumer Secret** (see [Optional Configuration](#optional-configuration)). Each value is masked as you type it and kept in your system's secure credential store, not in a settings file or the chat. `claude plugin install` run from a shell does not show this dialog, so open it from a session afterwards. `/ayrshare:setup` explains each field. After saving, and after any later change to these settings, run `/reload-plugins` (or restart Claude Code) so the server reconnects with the new values.
 
 The command needs the plugin's full id. It is `ayrshare@ayrshare` when you installed from this repository's marketplace, as above, and `ayrshare@synced` when you added Ayrshare from Claude's plugin directory on claude.ai (which needs Claude Code 2.1.273 or later). `claude plugin list` shows which one you have.
 
 #### Upgrading from 0.2.2 or earlier
 
-Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.3.0 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at [app.ayrshare.com](https://app.ayrshare.com).
+Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.3.0 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once, enter the same values, and run `/reload-plugins`. You can then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at [app.ayrshare.com](https://app.ayrshare.com).
 
 ---
 
@@ -111,8 +111,9 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install the plugin globally (user is the default scope)
 claude plugin install ayrshare@ayrshare
 
-# 3. Enter your API key. Run inside Claude Code:
+# 3. Enter your API key, then load it. Run inside Claude Code:
 /plugin configure ayrshare@ayrshare
+/reload-plugins
 ```
 
 Commands, agents, and skills are available in every project. No project files are modified.
@@ -128,8 +129,9 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install scoped to the current project (not committed to git)
 claude plugin install ayrshare@ayrshare --scope local
 
-# 3. Enter your API key. Run inside Claude Code:
+# 3. Enter your API key, then load it. Run inside Claude Code:
 /plugin configure ayrshare@ayrshare
+/reload-plugins
 ```
 
 Commands, agents, and skills only appear in this project.
@@ -145,8 +147,9 @@ claude plugin marketplace add ayrshare/ayrshare-social-media-api-claude-plugin
 # 2. Install scoped to the project (committed to git)
 claude plugin install ayrshare@ayrshare --scope project
 
-# 3. Each developer enters their own API key. Run inside Claude Code:
+# 3. Each developer enters their own API key, then loads it. Run inside Claude Code:
 /plugin configure ayrshare@ayrshare
+/reload-plugins
 ```
 
 The plugin is committed to the repo so the whole team gets it automatically. The repo holds no key: each developer enters their own, and it stays in that developer's secure credential store.
@@ -243,7 +246,7 @@ The last two are multi-step **workflow** skills: they orchestrate the tools abov
 
 The API key is the plugin's `api_key` setting, which the `ayrshare` server's `.mcp.json` puts into its `Authorization` header (`Bearer ${user_config.api_key}`). Profile scoping has two equivalent inputs: a `Profile-Key` connection header (the default for every call) **or** an optional `profileKey` tool argument on a profile-scoped tool call (the argument wins when both are set; a few utility/AI tools such as `generate_post` and `recommend_hashtags` are excluded, see `getting-started`). The per-call argument lets an agent act as a client it learns at runtime without changing settings or restarting.
 
-The optional `Profile-Key` and X BYOK headers come from settings that default to empty, so you turn each one on by filling it in with `/plugin configure ayrshare@ayrshare`. Leave a setting empty and its header goes out empty, which the server treats as not provided. No `.mcp.json` editing, and nothing to redo after `claude plugin update`.
+The optional `Profile-Key` and X BYOK headers come from settings that default to empty, so you turn each one on by filling it in with `/plugin configure ayrshare@ayrshare` and running `/reload-plugins`. Leave a setting empty and its header goes out empty, which the server treats as not provided. No `.mcp.json` editing, and nothing to redo after `claude plugin update`.
 
 ### Act as a specific client profile (`profile_key` setting or `profileKey` argument)
 

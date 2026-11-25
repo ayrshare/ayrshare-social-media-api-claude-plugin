@@ -33,7 +33,7 @@ The four settings:
    - **Profile-Key**: ask whether they want every call to default to one client profile. This is a neutral choice that depends on how they work; do not present either answer as recommended. If not, they leave it empty.
    - **X Consumer Key** and **X Consumer Secret**: ask "Do you use X/Twitter through Ayrshare (posting, analytics or messages)?" If yes, they enter both. If no, they leave both empty. Do not present skipping as recommended: anyone who makes any X call needs the pair.
 
-   To change a value later, they open the same dialog again. Leaving a field as it is keeps its saved value.
+   To change a value later, they open the same dialog again and run `/reload-plugins` after saving. Leaving a field as it is keeps its saved value.
 
    To stop defaulting to a client profile, they remove the plugin and add it again. Clearing the field doesn't work: a blank field keeps the saved value, and so does an empty value sent with `--values-stdin`. Claude Code deletes saved values only when it removes the plugin's last installed scope, so they uninstall it at every scope `claude plugin list` shows (for example `claude plugin uninstall ayrshare@ayrshare --scope project`; the default is `--scope user`), install it again at the same scopes, and re-enter the API key, plus the X Consumer Key and Secret if they use X. For a plugin added from Claude's plugin directory, they remove it on claude.ai, add it again, and re-enter their settings.
 
