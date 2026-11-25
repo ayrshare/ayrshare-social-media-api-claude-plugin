@@ -82,6 +82,8 @@ Then install the `ayrshare` plugin (`plugin@marketplace`) at the scope you want:
 | This project only | `claude plugin install ayrshare@ayrshare --scope local` | Current project, not committed to git |
 | This project (shared) | `claude plugin install ayrshare@ayrshare --scope project` | Current project, committed to git with the team |
 
+Whatever scope you install at, the API key and the other settings are saved once per user on this machine and apply in every project where the plugin is enabled. To act as a different client in one project, pass `profileKey` on the call, or ask the agent to (see [Optional Configuration](#optional-configuration)).
+
 After installing, configure your API key inside Claude Code:
 
 ```text
@@ -94,7 +96,7 @@ The command needs the plugin's full id. It is `ayrshare@ayrshare` when you insta
 
 #### Upgrading from 0.2.2 or earlier
 
-Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from the `env` block of your `settings.json` (or your shell profile).
+Earlier versions read your key from the `AYRSHARE_API_KEY` environment variable (and the optional `AYRSHARE_PROFILE_KEY`, `X_TWITTER_OAUTH1_API_KEY` and `X_TWITTER_OAUTH1_API_SECRET`). Version 0.2.3 no longer reads them, and until you enter the key its tools do not load. After updating, run `/plugin configure ayrshare@ayrshare` (or `/plugin configure ayrshare@synced` if you added it from Claude's plugin directory) once and enter the same values. You can then delete the old variables from wherever you put them: the `env` block of `~/.claude/settings.json`, `./.claude/settings.local.json` or `./.claude/settings.json`, or your shell profile. If the key was ever in a committed file such as `./.claude/settings.json`, it stays in git history, so generate a new key at [app.ayrshare.com](https://app.ayrshare.com).
 
 ---
 
@@ -161,7 +163,7 @@ claude mcp add ayrshare --transport http \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
-Add `--scope local` to limit it to the current project. The key is stored permanently in Claude Code's config — run once and you are done.
+Add `--scope local` to limit it to the current project. The key is stored permanently in Claude Code's config — run once and you are done. Unlike the plugin's settings, this keeps the key as plain text in Claude Code's config file, and the command itself can show up in shell history.
 
 ---
 

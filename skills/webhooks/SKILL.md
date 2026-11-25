@@ -26,7 +26,7 @@ All three are profile-scoped: choose the profile with the `profileKey` argument 
 
 ## Auth
 
-All three tools are **profile-scoped**: choose the profile with an optional `profileKey` tool argument or the `Profile-Key` connection header (the argument wins when both are set). Pass `profileKey` on the call to manage one client profile's webhooks, or set the `Profile-Key` header (`.mcp.json` headers) to default the whole connection to it; with neither, calls manage the account's primary/Business profile. Beyond `profileKey`, these webhook tools take no `passthrough` object; their inputs are exactly the fields in the table above. Full model: `../getting-started/SKILL.md`.
+All three tools are **profile-scoped**: choose the profile with an optional `profileKey` tool argument or the `Profile-Key` connection header (the argument wins when both are set). Pass `profileKey` on the call to manage one client profile's webhooks, or set the plugin's Profile-Key setting (`/plugin configure`; it is sent as the `Profile-Key` header) to default the whole connection to it; with neither, calls manage the account's primary/Business profile. Beyond `profileKey`, these webhook tools take no `passthrough` object; their inputs are exactly the fields in the table above. Full model: `../getting-started/SKILL.md`.
 
 ## Usage guidance
 

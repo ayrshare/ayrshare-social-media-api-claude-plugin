@@ -36,8 +36,8 @@ Most tools are **profile-scoped** and accept the optional `profileKey` argument 
 **As a connection header (the default for every call).** With the **plugin**, the bundled `.mcp.json` already carries the header, filled from the plugin's optional `profile_key` setting (empty by default):
 ```jsonc
 "headers": {
-  "Authorization": "Bearer ${user_config.api_key}",
-  "Profile-Key": "${user_config.profile_key}"   // empty by default → primary profile
+  "Authorization": "Bearer <the api_key setting>",
+  "Profile-Key": "<the profile_key setting>"   // empty by default → primary profile
 }
 ```
 So the user just fills in **Profile-Key** with `/plugin configure ayrshare@ayrshare`; every call on that connection then defaults to that profile. Leave it empty and the header goes out empty, which the server treats as "act on the primary profile." (For a non-plugin `claude mcp add` setup, add the `Profile-Key` header yourself alongside `Authorization`.)
@@ -69,7 +69,7 @@ Each domain has its own skill with full parameters and gotchas:
 
 ## API key requirement
 
-The API key (the plugin's `api_key` setting) is the **account-level Business plan API key**, obtained from the Ayrshare dashboard ([app.ayrshare.com](https://app.ayrshare.com) → Settings → API Key). The MCP server sends it as the HTTP Bearer token on every call; it is not a per-call argument. A **Business plan is required** for the Profiles / multi-profile features (create profile, act as a client). If the key is missing, Claude Code does not load the server, so no Ayrshare tools appear; if it is wrong, every tool returns 401/403. See *Missing credentials* below.
+The API key (the plugin's `api_key` setting) is the **account-level Business plan API key**, obtained from the Ayrshare dashboard ([app.ayrshare.com](https://app.ayrshare.com) → Settings → API Key). The MCP server sends it as the HTTP Bearer token on every call; it is not a per-call argument. A **Business plan is required** for the Profiles / multi-profile features (create profile, act as a client). If the key is missing, Claude Code does not load the server, so no Ayrshare tools appear; if it is wrong, every tool returns a 401 (or a 403 with code 102). Other 403s, such as a suspended account (code 276) or a missing plan, are not key problems: explain them with `explain_error`. See *Missing credentials* below.
 
 ## Installation (summary)
 
@@ -98,7 +98,7 @@ claude mcp add ayrshare --transport http \
 
 **CI / headless:** install the plugin, then run `claude plugin configure ayrshare@ayrshare --values-stdin < values.json` (Claude Code 2.1.285+), where the CI system writes `values.json` from its secret store, so the key never sits on a command line (details in `references/install.md`).
 
-**Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare`, Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
+**Upgrading from 0.2.2 or earlier:** those versions read the `AYRSHARE_API_KEY` environment variable. This version does not. Until the user enters the key with `/plugin configure ayrshare@ayrshare` (or `ayrshare@synced`), Claude Code does not load the server, so no `mcp__ayrshare__*` tools appear at all. The plugin needs Claude Code 2.1.119 or later.
 
 > **Verification gotcha:** saving the settings reloads the plugin and reconnects the server. If a tool still returns 401/403 right after, run `/reload-plugins` or restart Claude Code, then run `mcp__ayrshare__get_post_history` (a plan-agnostic read — `list_profiles` needs a Business plan) to confirm the connection works.
 
@@ -126,7 +126,7 @@ The server fails fast and surfaces errors. Your job is to **not paper over them*
 
 ## Missing credentials / free-trial guidance
 
-When the user has **no Ayrshare account or API key**, when **the API key is not set or wrong** (an unset key means no `mcp__ayrshare__*` tools load at all), or when the API returns **401/403**, surface this signup link for a **28-day free trial of the Ayrshare Launch plan**:
+When the user has **no Ayrshare account or API key**, when **the API key is not set or wrong** (an unset key means no `mcp__ayrshare__*` tools load at all), or when the API returns a **401** (or a 403 with code 102), surface this signup link for a **28-day free trial of the Ayrshare Launch plan**:
 
 ```text
 https://billing.ayrshare.com/b/9B6bJ15Oidr9fz615u1Nu0h?utm_source=claude
